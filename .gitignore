@@ -1,0 +1,106 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+env.bak/
+venv.bak/
+*.virtualenv
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+
+# VSCode, PyCharm, and other IDE-specific settings
+.vscode/
+.idea/
+
+# Logs and other temporary files
+*.log
+*.out
+*.err
+*.pid
+*.dat
+
+# Data files
+data/*
+!data/raw/*
+*.csv
+*.h5
+*.db
+*.sqlite
+*.npz
+*.npy
+*.zip
+
+# Serialized files (Pickle, joblib, etc.)
+*.pkl
+*.joblib
+
+# TensorFlow and PyTorch saved models
+*.ckpt
+*.pt
+*.pth
+
+# Caches
+*.cache
+.cache/
+__pycache__/
+
+# Matplotlib plot images
+*.png
+*.jpg
+*.jpeg
+*.svg
+
+# HDF5 files
+*.hdf5
+
+# Environment variables
+.env
+
+# Other machine learning or data science related files
+*.model
+*.weights
+*.index
+*.tflite
+*.tensorboard
+*.pb
+
+# Local test reports
+coverage/
+*.cover
+*.coverage
+*.lcov
+nosetests.xml
+coverage.xml
+*.coveragerc
+
+# PyTest cache
+.pytest_cache/
