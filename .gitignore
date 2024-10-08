@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -105,8 +104,6 @@ coverage.xml
 
 # PyTest cache
 .pytest_cache/
-=======
-.idea
-.idea/
+
+# DS Store
 .DS_Store
->>>>>>> main
