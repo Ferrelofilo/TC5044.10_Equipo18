@@ -31,7 +31,7 @@ DEFAULT_COLUMN_NAMES = (
 
 DATA_FILE = "flare.data2"
 
-DESTINATION_RAW_PATH = os.path.join(os.getcwd(), "data/raw")
+DESTINATION_RAW_PATH = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), "data/raw")
 
 
 @dataclass
