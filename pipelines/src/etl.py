@@ -29,7 +29,7 @@ DEFAULT_COLUMN_NAMES = (
     "severe flares",
 )
 
-DATA_FILES = ("flare.data1", "flare.data2")
+DATA_FILE = "flare.data2"
 
 DESTINATION_RAW_PATH = os.path.join(os.getcwd(), "data/raw")
 
@@ -98,20 +98,20 @@ class DataIntoLocalFile:
 class CreateDF:
     file_paths: str = DESTINATION_RAW_PATH
     column_names: tuple[str] = DEFAULT_COLUMN_NAMES
-    data_files: tuple[str] = DATA_FILES
+    data_file: str = DATA_FILE
 
     def _read_raw_data(self):
         """Check if file paths exist and store them."""
         valid_paths = []
-        for file_name in self.data_files:
-            # Construct the full file path (assuming files are in the current working directory)
-            if os.path.exists(self.file_paths):
-                file_path = os.path.join(self.file_paths, file_name)
-                valid_paths.append(file_path)
-                logger.debug(f"Found data file to extract: {file_path}")
-                return valid_paths
-            else:
-                print(f"File not exiting: {file_path}")
+        #for file_name in self.data_file:
+        # Construct the full file path (assuming files are in the current working directory)
+        file_path = os.path.join(self.file_paths, self.data_file)
+        if os.path.exists(self.file_paths):
+            valid_paths.append(file_path)
+            logger.debug(f"Found data file to extract: {file_path}")
+            return valid_paths
+        else:
+            print(f"File not exiting: {file_path}")
 
     def _cleanup_files(self):
         """Delete all files in self.file_paths except for .csv files."""
@@ -123,9 +123,9 @@ class CreateDF:
                 os.remove(file_path)
 
     def _save_df(self, df):
-        saving_path = os.path.join(self.file_paths, "raw_df.csv")
+        saving_path = os.path.join(self.file_paths, "flare_data2_df.csv")
         try:
-            df.to_csv(saving_path)
+            df.to_csv(saving_path, index=False)
             logger.debug(f"Saved CSV on: {saving_path}")
         except Exception as exc:
             logger.error("Error saving the CSV of the DF", exc_info=exc)
@@ -151,11 +151,17 @@ class CreateDF:
 
         # Concatenate all DataFrames into a single DataFrame
         if dataframes:
-            concatenated_df = pd.concat(dataframes, ignore_index=True)
-            logger.debug("All DataFrames have been concatenated.")
+            #concatenated_df = pd.concat(dataframes, ignore_index=True)
+            #logger.debug("All DataFrames have been concatenated.")
             self._cleanup_files()
-            self._save_df(concatenated_df)
-            return concatenated_df
+            data_df = dataframes.pop()
+            dp = data_df[data_df.duplicated(keep=False)]
+            logger.info(f"Duplicated rows dropped : {dp.duplicated().sum()}")
+            data_df.drop_duplicates(inplace=True)
+            data_df.drop(["area of largest spot"], axis=1, inplace=True) #solo tiene 1 valor
+            self._save_df(data_df)
+            logger.info("Raw data saved.")
+            return data_df
 
         logger.error("No DataFrames were created.")
         return None
