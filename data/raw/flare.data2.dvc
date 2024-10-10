@@ -1,0 +1,6 @@
+outs:
+- md5: e00adcdae5bda0a95fb9a2d7f98d68e8
+  size: 27776
+  isexec: true
+  hash: md5
+  path: flare.data2
