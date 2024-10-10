@@ -48,36 +48,11 @@ venv.bak/
 *.pid
 *.dat
 
-# Data files
-data/*
-!data/raw/*
-*.csv
-*.h5
-*.db
-*.sqlite
-*.npz
-*.npy
-*.zip
-
-# Serialized files (Pickle, joblib, etc.)
-*.pkl
-*.joblib
-
-# TensorFlow and PyTorch saved models
-*.ckpt
-*.pt
-*.pth
-
 # Caches
 *.cache
 .cache/
 __pycache__/
 
-# Matplotlib plot images
-*.png
-*.jpg
-*.jpeg
-*.svg
 
 # HDF5 files
 *.hdf5

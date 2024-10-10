@@ -1,0 +1,13 @@
+# Ignore everything in the data folder and its subdirectories
+*
+!raw/
+!processed/
+!final/
+# Do not ignore .dvc files anywhere in the data folder or its subdirectories
+!*.dvc
+
+# Do not ignore this .gitignore file itself
+!.gitignore
+
+#readme file
+!README.md
