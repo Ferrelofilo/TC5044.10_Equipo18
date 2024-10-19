@@ -1,0 +1,55 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: python3 pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
+    deps:
+    - path: data/raw/flare_data2_df.csv
+      hash: md5
+      md5: 9d01a38e43794aed1b844d410e06db89
+      size: 8967
+    - path: pipelines/src/load_data.py
+      hash: md5
+      md5: bd923fae8036ef0be5f202f790439258
+      size: 248
+    params:
+      params.yaml:
+        data.filepath: data/raw/flare_data2_df.csv
+        data.processed: data/processed/
+    outs:
+    - path: data/processed/train_test_data.csv
+      hash: md5
+      md5: 9d01a38e43794aed1b844d410e06db89
+      size: 8967
+  preprocess:
+    cmd: PYTHONPATH=. python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
+      data/processed/X_train.pt data/processed/X_test.pt data/processed/y_train.pt
+      data/processed/y_test.pt
+    deps:
+    - path: data/processed/train_test_data.csv
+      hash: md5
+      md5: 9d01a38e43794aed1b844d410e06db89
+      size: 8967
+    - path: pipelines/src/preprocess_v2.py
+      hash: md5
+      md5: ec9b902f18e70df311cd28e7baed474b
+      size: 997
+    params:
+      params.yaml:
+        data.processed: data/processed/
+    outs:
+    - path: data/processed/X_test.pt
+      hash: md5
+      md5: 1ff5cf11be1676822f22b8bf5070baea
+      size: 3799
+    - path: data/processed/X_train.pt
+      hash: md5
+      md5: fd95ff2f1ffa46b092ea437765739686
+      size: 11676
+    - path: data/processed/y_test.pt
+      hash: md5
+      md5: 2329d51d3f8f1291bbd1a0d1523de1b0
+      size: 2445
+    - path: data/processed/y_train.pt
+      hash: md5
+      md5: 4d60b4745e4cbd004bb42e86ba19e1a5
+      size: 5140
