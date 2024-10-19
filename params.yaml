@@ -1,0 +1,4 @@
+data:
+  filepath: "data/raw/flare_data2_df.csv"
+  processed: data/processed/
+  models: models/

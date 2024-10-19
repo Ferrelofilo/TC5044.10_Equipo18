@@ -1,6 +1,8 @@
 import pandas as pd
 import sys
 
+import torch
+
 from pipelines.transformers.flare_column_transformer import get_flare_transformer
 from pipelines.utils.data_utils import split_data
 
@@ -22,7 +24,7 @@ if __name__ == '__main__':
     output_test_target = sys.argv[5]
 
     X_train, X_test, y_train, y_test = preprocess_data(data_path)
-    pd.DataFrame(X_train).to_csv(output_train_features, index=False)
-    pd.DataFrame(X_test).to_csv(output_test_features, index=False)
-    pd.DataFrame(y_train).to_csv(output_train_target, index=False)
-    pd.DataFrame(y_test).to_csv(output_test_target, index=False)
+    torch.save(X_train, output_train_features)
+    torch.save(X_test, output_test_features)
+    torch.save(y_train, output_train_target)
+    torch.save(y_test, output_test_target)
