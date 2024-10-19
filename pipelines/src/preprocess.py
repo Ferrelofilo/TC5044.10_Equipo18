@@ -1,109 +1,58 @@
-import os
-from dataclasses import dataclass
-
 import pandas as pd
-from etl import CreateDF, DataIntoLocalFile
+import sys
+
+import torch
+import numpy as np
+from sklearn.model_selection import train_test_split
 from sklearn.compose import make_column_transformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import MinMaxScaler, OrdinalEncoder
-
-from utils.logger_setup import setup_logger
-
-logger = setup_logger(__name__)
-
-DEFAULT_COLUMN_NAMES = (
-    "modified Zurich class",
-    "largest spot size",
-    "spot distribution",
-    "activity",
-    "evolution",
-    "previous 24 hour flare activity",
-    "historically-complex",
-    "became complex on this pass",
-    "area",
-    "common flares",
-    "moderate flares",
-    "severe flares",
-)
+from sklearn.preprocessing import OrdinalEncoder
 
 
-@dataclass
-class DataPreprocessor:
-    save_folder_path: str = "../data/preprocess"
-    column_names: tuple[str] = DEFAULT_COLUMN_NAMES
-
-    def load_data(self):
-        """Load the raw data from a file."""
-        logger.info(f"Loading data")
-        try:
-            data_local = DataIntoLocalFile()
-            saved_path = data_local.download_and_extract()
-
-            df_class = CreateDF(saved_path)
-            df = df_class.create_dataframe()
-            logger.info("Data loaded successfully.")
-            return df
-        except Exception as e:
-            logger.error(f"Error loading data: {e}")
-            return None
-
-    def preprocess_data(self, data_df, columns_to_encode=None):
-        """Preprocess the data using encoding and other transformations."""
-        if columns_to_encode is None:
-            columns_to_encode = [
-                "modified Zurich class",
-                "largest spot size",
-                "spot distribution",
-            ]
-        pipeline = Pipeline(
-            [
-                (
-                    "encode",
-                    make_column_transformer(
-                        (OrdinalEncoder(), columns_to_encode), remainder="passthrough"
-                    ),
-                ),
-                # ('scale', MinMaxScaler()),  Podemos agregar más transformaciones si es necesario.
-            ]
-        )
-        encoded_scaled = pipeline.fit_transform(data_df)
-        data_df_processed = pd.DataFrame(
-            encoded_scaled, index=data_df.index, columns=data_df.columns
-        )
-        return data_df_processed
-
-    def clean_data(self, df):
-        """Clean the data by removing duplicates, dropping unnecessary columns, and encoding."""
-        logger.info("Cleaning data...")
-        df.drop_duplicates(inplace=True)
-        try:
-            df.drop("area of largest spot", axis=1, inplace=True)
-        except:
-            pass
-
-        # Preprocess the data
-        df_processed = self.preprocess_data(df)
-
-        logger.info("Data cleaned and preprocessed.")
-        return df_processed
-
-    def save_data(self, df):
-        """Save the preprocessed data to a CSV file."""
-        try:
-            os.makedirs(self.save_folder_path, exist_ok=True)
-            df.to_csv(self.save_folder_path + "preprocessed_data.csv", index=False)
-            logger.info(f"Data saved to {self.save_folder_path}")
-        except Exception as e:
-            logger.error(f"Error saving data: {e}")
-
-    def main(self, save_local_data):
-        raw_df = self.load_data()
-        preprocess_df = self.preprocess_data(raw_df)
-        clean_df = self.clean_data(preprocess_df)
-        if save_local_data:
-            self.save_data(clean_df)
-        return clean_df
+def target_output(data):
+    return [np.array(data.pop("common flares")), np.array(data.pop("moderate flares")),
+            np.array(data.pop("severe flares"))]
 
 
-if __name__ == "__main__":
-    execute_preprocess = DataPreprocessor().main()
+def split_data(data_df, test_size=0.2, random_state=42):
+    X_train, X_test = train_test_split(data_df, test_size=test_size, random_state=random_state)
+
+    y_train = target_output(X_train)
+    y_test = target_output(X_test)
+
+    # PyTorch tensors
+    X_train = torch.tensor(X_train.values, dtype=torch.float32)
+    X_test = torch.tensor(X_test.values, dtype=torch.float32)
+    y_train = [torch.tensor(target, dtype=torch.float32).unsqueeze(1) for target in y_train]
+    y_test = [torch.tensor(target, dtype=torch.float32).unsqueeze(1) for target in y_test]
+
+    return X_train, X_test, y_train, y_test
+
+
+def preprocess_data(data_path):
+    data_df = pd.read_csv(data_path)
+    columns_to_encode = ["modified Zurich class", "largest spot size", "spot distribution"]
+    pipeline = Pipeline(
+        [("encode", make_column_transformer((OrdinalEncoder(), columns_to_encode), remainder="passthrough")),
+         # ('scale', MinMaxScaler()),  Podemos ir agregando más transformaciones de ser necesario.
+         ]
+    )
+    encoded_scaled = pipeline.fit_transform(data_df)
+    data_df_processed = pd.DataFrame(encoded_scaled, index=data_df.index, columns=data_df.columns)
+
+    X_train, X_test, y_train, y_test = split_data(data_df_processed)
+    return X_train, X_test, y_train, y_test
+
+
+if __name__ == '__main__':
+    data_path = sys.argv[1]
+    output_train_features = sys.argv[2]
+    output_test_features = sys.argv[3]
+    output_train_target = sys.argv[4]
+    output_test_target = sys.argv[5]
+
+    X_train, X_test, y_train, y_test = preprocess_data(data_path)
+    pd.DataFrame(X_train).to_csv(output_train_features, index=False)
+    pd.DataFrame(X_test).to_csv(output_test_features, index=False)
+    pd.DataFrame(y_train).to_csv(output_train_target, index=False)
+    pd.DataFrame(y_test).to_csv(output_test_target, index=False)
