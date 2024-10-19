@@ -3,6 +3,7 @@
 !raw/
 !processed/
 !final/
+!models/
 # Do not ignore .dvc files anywhere in the data folder or its subdirectories
 !*.dvc
 
