@@ -132,6 +132,5 @@ def plot_actual_vs_predicted(y_true, y_pred, label):
 if __name__ == '__main__':
     model = sys.argv[1]
     test_loader = sys.argv[2]
-    criterion    = sys.argv[3]
-    rmse_metric    = sys.argv[4]
+    criterion = sys.argv[3]
     evaluate_multi_output_metrics(model, test_loader, criterion)

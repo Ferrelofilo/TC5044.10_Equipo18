@@ -20,6 +20,25 @@ class SimpleLinearCnnMO3(nn.Module):
         y3 = self.y3_output(x)  # severe_flares
         return y1, y2, y3
 
+class ConvolutionalSimpleModel(nn.Module):
+    def __init__(self, input_len=10, out_features1=64, out_features2=32, bias=True):
+        super(ConvolutionalSimpleModel, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=out_features1, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=out_features1, out_channels=out_features2, kernel_size=3, padding=1)
+        #Could add batch normalization
+        self.flatten = nn.Flatten()
+        self.y1_output = nn.Linear(out_features2 * input_len, 1)  # Adjusting input size
+        self.y2_output = nn.Linear(out_features2 * input_len, 1)
+        self.y3_output = nn.Linear(out_features2 * input_len, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.conv1(x))
+        x = torch.relu(self.conv2(x))
+        x = self.flatten(x)
+        y1 = self.y1_output(x)  # common_flares
+        y2 = self.y2_output(x)  # moderate_flares
+        y3 = self.y3_output(x)  # severe_flares
+        return y1, y2, y3
 
 # Esta función puede ir en train o podemos usar el resultado de df para rellenar mlflow usando el step=
 # train _v2 usara este acercamiento
