@@ -79,7 +79,9 @@ def evaluate_multi_output_metrics(model, test_loader, criterion):
         }
     )
 
-    write_regression_report('TC5044.10_Equipo18\\pipelines\\reporting\\regression_report.txt', test_loss, test_loader, rmse_y1_value, 
+    # Previous filepath
+    # 'TC5044.10_Equipo18\\pipelines\\reporting\\regression_report.txt'
+    write_regression_report(report_file_path, test_loss, test_loader, rmse_y1_value, 
                             mae_y1, r2_y1,rmse_y2_value, mae_y2, r2_y2,rmse_y3_value, mae_y3, r2_y3)
 
     #Loss Curve Visualization
@@ -133,4 +135,5 @@ if __name__ == '__main__':
     model = sys.argv[1]
     test_loader = sys.argv[2]
     criterion = sys.argv[3]
-    evaluate_multi_output_metrics(model, test_loader, criterion)
+    report_file_path = sys.argv[4]
+    evaluate_multi_output_metrics(model, test_loader, criterion, report_file_path)
