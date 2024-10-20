@@ -81,3 +81,7 @@ coverage.xml
 
 # DS Store
 .DS_Store
+
+
+# Configurable
+models/*
