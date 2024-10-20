@@ -20,6 +20,25 @@ class SimpleLinearCnnMO3(nn.Module):
         y3 = self.y3_output(x)  # severe_flares
         return y1, y2, y3
 
+class ConvolutionalSimpleModel(nn.Module):
+    def __init__(self, input_len=10, out_features1=64, out_features2=32, bias=True):
+        super(ConvolutionalSimpleModel, self).__init__()
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=out_features1, kernel_size=3, padding=1)
+        self.conv2 = nn.Conv1d(in_channels=out_features1, out_channels=out_features2, kernel_size=3, padding=1)
+        #Could add batch normalization
+        self.flatten = nn.Flatten()
+        self.y1_output = nn.Linear(out_features2 * input_len, 1)  # Adjusting input size
+        self.y2_output = nn.Linear(out_features2 * input_len, 1)
+        self.y3_output = nn.Linear(out_features2 * input_len, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.conv1(x))
+        x = torch.relu(self.conv2(x))
+        x = self.flatten(x)
+        y1 = self.y1_output(x)  # common_flares
+        y2 = self.y2_output(x)  # moderate_flares
+        y3 = self.y3_output(x)  # severe_flares
+        return y1, y2, y3
 
 # Esta función puede ir en train o podemos usar el resultado de df para rellenar mlflow usando el step=
 # train _v2 usara este acercamiento
@@ -52,16 +71,11 @@ def train_model(model, dataloader, optimizer, criterion, rmse_metric, epochs=10)
             rmse_metric.update(outputs_y3, y3)
 
         epoch_rmse = rmse_metric.compute().item()
-        # Si se agrega esta función en el script de train.py
-        # mlflow.log_metric("average_loss", running_loss / len(dataloader), step=epoch + 1)
-        # mlflow.log_metric("rmse", epoch_rmse, step=epoch + 1)
         epochs_data.append({
             "epoch": epoch + 1,
             "average_loss": running_loss / len(dataloader),
             "rmse": epoch_rmse
         })
-        #print(f"Epoch [{epoch + 1}/{epochs}] - Loss: {running_loss / len(dataloader):.4f}, RMSE: {epoch_rmse:.4f}")
-
     epochs_df = pd.DataFrame(epochs_data)
 
     return epochs_df
