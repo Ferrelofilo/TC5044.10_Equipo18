@@ -1,7 +1,5 @@
 ## Procedimiento para ejecutar DVC
-1)Descargar el archivo de **flare-mlops###.json** y agregarlo a la carpeta de **.dvc** dentro del repositorio del equipo. Abajo hemos compartido la liga de donde se puede encontrar el documento.
-
-[flare-mlops###.json](https://drive.google.com/drive/u/0/folders/1mkQ8S6jGSXLvUi7F0CDQlCiItCGLsdxj)
+1)Descargar el archivo de **flare-mlops###.json** y agregarlo a la carpeta de **.dvc** dentro del repositorio del equipo. Abajo hemos compartido la liga de donde se puede encontrar el documento: [flare-mlops###.json](https://drive.google.com/drive/u/0/folders/1mkQ8S6jGSXLvUi7F0CDQlCiItCGLsdxj)
 
 2)Antes de ejecutar el comando que se muestra a continuación, debemos ajustar la ruta del archivo **{root content .json file path}** destacada, configurándola con la ruta relativa donde se guardó el archivo JSON anterior. Si encuentras algún error, asegúrate de eliminar cualquier **../** que pueda haberse agregado en la ruta.
 
@@ -25,6 +23,17 @@ dvc remote modify remote-storage --local  gdrive_service_account_json_file_path 
 
 5)Ejecutar **dvc repro**. Si tienes problemas al ejecutar el comando dvc repro, asegúrate de estar utilizando Python3. A continuación, hemos proporcionado algunas instrucciones sobre cómo migrar a Python3.
 
+Pasos para Configurar el Comando python3 en Windows
 
+i. Abrir el Notepad y crea un archivo llamado **python3.bat** y guárdalo en una carpeta que esté dentro de tu variable de entorno PATH. (Se puede guardar en C:\Windows\System32\)
+
+ii. Escribe lo siguiente en el archivo:
+
+```
+@echo off
+python %*
+```
+
+iii. Guarda el archivo y luego ejecuta ***python3 --version*** para confirmar que **python3** se haya configurado correctamente.
 
 
