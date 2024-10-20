@@ -10,8 +10,8 @@ The repository will host all course materials related to MLOps, ensuring a well-
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+* numpy <= 2.1.2
+* pandas <= 2.2.3
 
 <!---
 
