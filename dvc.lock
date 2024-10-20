@@ -74,16 +74,16 @@ stages:
       size: 5140
     - path: pipelines/src/train.py
       hash: md5
-      md5: b453f29f765017cd0092878a9dfeb730
-      size: 5931
+      md5: 5bddd72fa075b1ea76e5a7ca1922d73c
+      size: 7336
     params:
       params.yaml:
         train.epochs: 10
     outs:
     - path: models/artifacts_
       hash: md5
-      md5: 5dfac558e66c914511fc4abc64fefc99.dir
-      size: 16463
+      md5: 9b792a95c46bf03d48d861af23b2335c.dir
+      size: 16461
       nfiles: 3
   evaluate_model:
     cmd: python pipelines/src/evaluate_model.py data/processed/X_test.pt data/processed/y_test.pt
@@ -99,7 +99,7 @@ stages:
       size: 2445
     - path: models/artifacts_/model_weights.pth
       hash: md5
-      md5: 5811e4eaee78d9626ca822aefa60d454
+      md5: 2aa5e5b6619954dd36eb39aea8433cf7
       size: 15116
     - path: pipelines/src/evaluate_model.py
       hash: md5
@@ -111,6 +111,6 @@ stages:
     outs:
     - path: models/evaluation_
       hash: md5
-      md5: 73a558feb557df70167898fbb3a08479.dir
-      size: 116
+      md5: 8a287d54ac5d145c331d1f7c40339b31.dir
+      size: 118
       nfiles: 2
