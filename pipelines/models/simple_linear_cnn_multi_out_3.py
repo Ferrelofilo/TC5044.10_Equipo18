@@ -52,16 +52,11 @@ def train_model(model, dataloader, optimizer, criterion, rmse_metric, epochs=10)
             rmse_metric.update(outputs_y3, y3)
 
         epoch_rmse = rmse_metric.compute().item()
-        # Si se agrega esta función en el script de train.py
-        # mlflow.log_metric("average_loss", running_loss / len(dataloader), step=epoch + 1)
-        # mlflow.log_metric("rmse", epoch_rmse, step=epoch + 1)
         epochs_data.append({
             "epoch": epoch + 1,
             "average_loss": running_loss / len(dataloader),
             "rmse": epoch_rmse
         })
-        #print(f"Epoch [{epoch + 1}/{epochs}] - Loss: {running_loss / len(dataloader):.4f}, RMSE: {epoch_rmse:.4f}")
-
     epochs_df = pd.DataFrame(epochs_data)
 
     return epochs_df
