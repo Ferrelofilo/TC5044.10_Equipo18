@@ -31,7 +31,10 @@ DEFAULT_COLUMN_NAMES = (
 
 DATA_FILE = "flare.data2"
 
-DESTINATION_RAW_PATH = os.path.join(os.path.dirname(os.path.dirname(os.getcwd())), "data/raw")
+
+DESTINATION_RAW_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "../../data/raw"
+)
 
 
 @dataclass
@@ -103,7 +106,7 @@ class CreateDF:
     def _read_raw_data(self):
         """Check if file paths exist and store them."""
         valid_paths = []
-        #for file_name in self.data_file:
+        # for file_name in self.data_file:
         # Construct the full file path (assuming files are in the current working directory)
         file_path = os.path.join(self.file_paths, self.data_file)
         if os.path.exists(self.file_paths):
@@ -151,14 +154,16 @@ class CreateDF:
 
         # Concatenate all DataFrames into a single DataFrame
         if dataframes:
-            #concatenated_df = pd.concat(dataframes, ignore_index=True)
-            #logger.debug("All DataFrames have been concatenated.")
+            # concatenated_df = pd.concat(dataframes, ignore_index=True)
+            # logger.debug("All DataFrames have been concatenated.")
             self._cleanup_files()
             data_df = dataframes.pop()
             dp = data_df[data_df.duplicated(keep=False)]
             logger.info(f"Duplicated rows dropped : {dp.duplicated().sum()}")
             data_df.drop_duplicates(inplace=True)
-            data_df.drop(["area of largest spot"], axis=1, inplace=True) #solo tiene 1 valor
+            data_df.drop(
+                ["area of largest spot"], axis=1, inplace=True
+            )  # solo tiene 1 valor
             self._save_df(data_df)
             logger.info("Raw data saved.")
             return data_df
@@ -169,8 +174,14 @@ class CreateDF:
 
 # Example of how to use the class
 if __name__ == "__main__":
-    data_local = DataIntoLocalFile()
-    saved_path = data_local.download_and_extract()
+    if len(sys.argv) > 1:
+        data_local = DataIntoLocalFile(destination_path=sys.argv[1])
+        saved_path = data_local.download_and_extract()
+        df_class = CreateDF(saved_path)
+        final_df = df_class.create_dataframe()
 
-    df_class = CreateDF(saved_path)
-    final_df = df_class.create_dataframe()
+    else:
+        data_local = DataIntoLocalFile()
+        saved_path = data_local.download_and_extract()
+        df_class = CreateDF(saved_path)
+        final_df = df_class.create_dataframe()

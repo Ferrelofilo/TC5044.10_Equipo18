@@ -1,4 +1,8 @@
 stages:
+  download_data:
+    cmd: python3 pipelines/src/etl.py
+    outs: 
+    - data/raw/flare_data2_df.csv
   load_data:
     cmd: python3 pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
     deps:
@@ -11,7 +15,7 @@ stages:
     - data/processed/train_test_data.csv
 
   preprocess:
-    cmd: PYTHONPATH=. python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
+    cmd: python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
       data/processed/X_train.pt data/processed/X_test.pt data/processed/y_train.pt
       data/processed/y_test.pt
     deps:
@@ -24,3 +28,26 @@ stages:
     - data/processed/X_train.pt
     - data/processed/y_test.pt
     - data/processed/y_train.pt
+  train_model:
+    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt models/
+    deps:
+      - pipelines/src/train.py
+      - data/processed/X_train.pt
+      - data/processed/y_train.pt
+    params:
+      - train.epochs
+    outs:
+      - models/artifacts_
+  evaluate_model:
+    cmd: python pipelines/src/evaluate_model.py data/processed/X_test.pt data/processed/y_test.pt models/artifacts_/model_weights.pth 32 models/evaluation_
+    deps:
+      - pipelines/src/evaluate_model.py 
+      - data/processed/X_test.pt  
+      - data/processed/y_test.pt  
+      - models/artifacts_/model_weights.pth
+    params:
+      - evaluation.batch_size  
+    # metrics:
+    #   - models/evaluation_/evaluation_metrics.json
+    outs:
+      - models/evaluation_ 

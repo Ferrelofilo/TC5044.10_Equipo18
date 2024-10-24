@@ -9,8 +9,8 @@ stages:
       size: 8967
     - path: pipelines/src/load_data.py
       hash: md5
-      md5: bd923fae8036ef0be5f202f790439258
-      size: 248
+      md5: 1922d995cd9c3f439f481bd7747b81f7
+      size: 479
     params:
       params.yaml:
         data.filepath: data/raw/flare_data2_df.csv
@@ -21,7 +21,7 @@ stages:
       md5: 9d01a38e43794aed1b844d410e06db89
       size: 8967
   preprocess:
-    cmd: PYTHONPATH=. python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
+    cmd: python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
       data/processed/X_train.pt data/processed/X_test.pt data/processed/y_train.pt
       data/processed/y_test.pt
     deps:
@@ -31,8 +31,8 @@ stages:
       size: 8967
     - path: pipelines/src/preprocess_v2.py
       hash: md5
-      md5: ec9b902f18e70df311cd28e7baed474b
-      size: 997
+      md5: 81325e9b0849d46193b1ac70c80f19eb
+      size: 1402
     params:
       params.yaml:
         data.processed: data/processed/
@@ -53,3 +53,64 @@ stages:
       hash: md5
       md5: 4d60b4745e4cbd004bb42e86ba19e1a5
       size: 5140
+  download_data:
+    cmd: python3 pipelines/src/etl.py
+    outs:
+    - path: data/raw/flare_data2_df.csv
+      hash: md5
+      md5: 9d01a38e43794aed1b844d410e06db89
+      size: 8967
+  train_model:
+    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt
+      models/
+    deps:
+    - path: data/processed/X_train.pt
+      hash: md5
+      md5: fd95ff2f1ffa46b092ea437765739686
+      size: 11676
+    - path: data/processed/y_train.pt
+      hash: md5
+      md5: 4d60b4745e4cbd004bb42e86ba19e1a5
+      size: 5140
+    - path: pipelines/src/train.py
+      hash: md5
+      md5: 5bddd72fa075b1ea76e5a7ca1922d73c
+      size: 7336
+    params:
+      params.yaml:
+        train.epochs: 10
+    outs:
+    - path: models/artifacts_
+      hash: md5
+      md5: 9b792a95c46bf03d48d861af23b2335c.dir
+      size: 16461
+      nfiles: 3
+  evaluate_model:
+    cmd: python pipelines/src/evaluate_model.py data/processed/X_test.pt data/processed/y_test.pt
+      models/artifacts_/model_weights.pth 32 models/evaluation_
+    deps:
+    - path: data/processed/X_test.pt
+      hash: md5
+      md5: 1ff5cf11be1676822f22b8bf5070baea
+      size: 3799
+    - path: data/processed/y_test.pt
+      hash: md5
+      md5: 2329d51d3f8f1291bbd1a0d1523de1b0
+      size: 2445
+    - path: models/artifacts_/model_weights.pth
+      hash: md5
+      md5: 2aa5e5b6619954dd36eb39aea8433cf7
+      size: 15116
+    - path: pipelines/src/evaluate_model.py
+      hash: md5
+      md5: 4dd0c93e4e1429dfc06bac319e8720c5
+      size: 4727
+    params:
+      params.yaml:
+        evaluation.batch_size: 32
+    outs:
+    - path: models/evaluation_
+      hash: md5
+      md5: 8a287d54ac5d145c331d1f7c40339b31.dir
+      size: 118
+      nfiles: 2
