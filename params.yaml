@@ -25,3 +25,4 @@ models:
 mlflow:
   experiment_name: "Flare Analysis V2"
   tracking_uri: "http://127.0.0.1:5000"
+  runs: "data/raw/runs_id.json"
