@@ -20,3 +20,8 @@ models:
     out_features2: 32
     kernel_size: 3
     padding: 1
+
+
+mlflow:
+  experiment_name: "Flare Analysis V2"
+  tracking_uri: "http://127.0.0.1:5000"
