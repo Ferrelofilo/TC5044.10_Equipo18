@@ -38,8 +38,7 @@ if __name__ == '__main__':
 
     test_loader = create_dataloader(x,y,batch_size=32, shuffle=True)
 
-    model_params = params['models'][model_type]
-    cnn = MultiOutCnnHandler(cnn_type=model_type, model_params=model_params)
+    cnn = MultiOutCnnHandler(cnn_type=model_type)
     cnn.load_model(model_path)  # Load the saved model state
 
     with mlflow.start_run(run_id=run_id):

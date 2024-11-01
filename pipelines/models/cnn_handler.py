@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 import numpy as np
 import pandas as pd
@@ -12,12 +12,12 @@ from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, C
 
 
 class MultiOutCnnHandler:
-    def __init__(self, cnn_type: str, model_params: Dict[str, any], optimizer_params: Dict[str, any] = None, criterion = None):
+    def __init__(self, cnn_type: str, model_params: Optional[Dict[str, any]] = None, optimizer_params: Optional[Dict[str, any]] = None, criterion = None):
         """
-        Initialize ModelHandler with a model type (cnn_type), model parameters, optimizer parameters, and a criterion.
+        Initialize ModelHandler with a model type (cnn_type), optional model parameters, optimizer parameters, and a criterion.
         """
         self.cnn_type = cnn_type
-        self.model_params = model_params
+        self.model_params = model_params if model_params is not None else {}  # Default to empty dictionary if None
         self.model = self.create_model()  # Initializes the model based on cnn_type
         self.optimizer_params = optimizer_params if optimizer_params else {"lr": 0.01}
         self.optimizer = optim.SGD(self.model.parameters(), **self.optimizer_params)
