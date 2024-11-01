@@ -10,9 +10,11 @@ import joblib
 import mlflow
 from torch import optim, nn
 from torchinfo import summary
+
+from pipelines.models.cnn_handler import MultiOutCnnHandler
 from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, train_model, ConvolutionalSimpleModel
 from pipelines.utils.data_utils import create_dataloader
-from pipelines.utils.mlflow_logging_utils import mlflow_epochs_logs, mlflow_torch_params
+from pipelines.utils.mlflow_logging_utils import mlflow_epochs_logs, mlflow_torch_params, mlflow_model_log_summary
 
 
 def load_params():
@@ -24,42 +26,29 @@ def load_params():
 params = load_params()
 
 
-# Default settings for Linear CNN and Convolutional CNN
-def create_cnn_model(cnn_type="linear_cnn"):
-    model_params = params['models'][cnn_type]
-    if cnn_type == 'linear_cnn':
-        model = SimpleLinearCnnMO3(**model_params)
-    elif model_type == 'convolutional_cnn':
-        model = ConvolutionalSimpleModel(**model_params)
-
-    optimizer = optim.SGD(model.parameters(), lr=0.01)
-    criterion = nn.MSELoss()
-    rmse_metric = torchmetrics.MeanSquaredError(squared=False)
-    return model, optimizer, criterion, rmse_metric
-
-
-def train_model_type(X_train_path, y_train_path, model_type):
+def cnn_model_train(X_train_path, y_train_path, model_type):
     x = torch.load(X_train_path)
     y = torch.load(y_train_path)
     train_loader = create_dataloader(x, y, batch_size=32, shuffle=True)
+    model_params = params['models'][model_type]
 
-    model, optimizer, criterion, rmse_metric = create_cnn_model(cnn_type=model_type)
+    mo_cnn_handler = MultiOutCnnHandler(cnn_type=model_type,model_params=model_params)
 
-    epoch_df = train_model(model, train_loader, optimizer, criterion, rmse_metric, epochs=10)
+    epoch_df = mo_cnn_handler.train_model(train_loader,epochs=10)
 
     mlflow_epochs_logs(epoch_df)
 
     ml_params = {"epochs": 10, "batch_size": 32, "shuffle": True}
-    mlflow_torch_params(model, optimizer, additional_params=ml_params)
+    mlflow_torch_params(mo_cnn_handler.model, mo_cnn_handler.optimizer, additional_params=ml_params)
 
-    return model
+    return mo_cnn_handler
 
 
 if __name__ == "__main__":
     X_train_path = sys.argv[1]
     y_train_path = sys.argv[2]
     model_type = sys.argv[3]
-    run_id_out = sys.argv[4]  # Json Outfile
+    run_id_out = params['mlflow']['runs']  # path to save run id json file
     model_dir = params['data']['models']  # params model location
     model_path = f"{model_dir}/{model_type}_model.pth"  # model outfile
 
@@ -73,11 +62,9 @@ if __name__ == "__main__":
 
         mlflow.set_tag("model_type", model_type)
         mlflow.set_tag("phase", "training")
-        model_trained = train_model_type(X_train_path, y_train_path, model_type)
+        cnn = cnn_model_train(X_train_path, y_train_path, model_type)
 
-        with open("model_summary.txt", "w") as f:
-            f.write(str(summary(model_trained)))
-        mlflow.log_artifact("model_summary.txt")
-        mlflow.pytorch.log_model(model_trained, "model")
+        mlflow_model_log_summary(cnn.model)
 
-    torch.save(model_trained, model_path)
+        cnn.save_model(model_path)
+
