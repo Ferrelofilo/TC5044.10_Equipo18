@@ -16,7 +16,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 
 # Inicializa el logger
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 from utils.logger_setup import setup_logger
 
 logger = setup_logger(__name__)
@@ -148,7 +148,7 @@ class TrainingSession:
 
 
 if __name__ == "__main__":
-    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..")))
     from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3
     from pipelines.utils.rmse_metric import RMSEMetric
 
