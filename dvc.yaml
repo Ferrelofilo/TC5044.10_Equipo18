@@ -1,10 +1,10 @@
 stages:
   download_data:
-    cmd: python3 pipelines/src/etl.py
+    cmd: python pipelines\utils\dataset.py
     outs: 
-    - data/raw/flare_data2_df.csv
+    - data/raw/flare_data2_df.csv 
   load_data:
-    cmd: python3 pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
+    cmd: python pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
     deps:
     - data/raw/flare_data2_df.csv
     - pipelines/src/load_data.py
@@ -13,11 +13,9 @@ stages:
     - data.processed
     outs:
     - data/processed/train_test_data.csv
-
   preprocess:
-    cmd: python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
-      data/processed/X_train.pt data/processed/X_test.pt data/processed/y_train.pt
-      data/processed/y_test.pt
+    cmd: python pipelines/src/preprocess_v2.py data/processed/train_test_data.csv data/processed/X_test.pt
+     data/processed/X_train.pt data/processed/y_test.pt data/processed/y_train.pt
     deps:
     - data/processed/train_test_data.csv
     - pipelines/src/preprocess_v2.py
@@ -28,26 +26,33 @@ stages:
     - data/processed/X_train.pt
     - data/processed/y_test.pt
     - data/processed/y_train.pt
-  train_model:
-    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt models/
+  train_model_linear:
+    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt linear
     deps:
       - pipelines/src/train.py
       - data/processed/X_train.pt
       - data/processed/y_train.pt
     params:
       - train.epochs
-    outs:
-      - models/artifacts_
-  evaluate_model:
-    cmd: python pipelines/src/evaluate_model.py data/processed/X_test.pt data/processed/y_test.pt models/artifacts_/model_weights.pth 32 models/evaluation_
+  train_model_convolutional:
+    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt convolutional
     deps:
-      - pipelines/src/evaluate_model.py 
+      - pipelines/src/train.py
+      - data/processed/X_train.pt
+      - data/processed/y_train.pt
+    params:
+      - train.epochs
+  evaluate_model_linear:
+    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt
+    deps:
       - data/processed/X_test.pt  
-      - data/processed/y_test.pt  
-      - models/artifacts_/model_weights.pth
+      - data/processed/y_test.pt
     params:
       - evaluation.batch_size  
-    # metrics:
-    #   - models/evaluation_/evaluation_metrics.json
-    outs:
-      - models/evaluation_ 
+  evaluate_model_convolutional:
+    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt
+    deps:
+      - data/processed/X_test.pt  
+      - data/processed/y_test.pt
+    params:
+      - evaluation.batch_size  
