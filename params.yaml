@@ -2,7 +2,21 @@ data:
   filepath: "data/raw/flare_data2_df.csv"
   processed: data/processed/
   models: models/
+
 train:
   epochs: 10
 evaluation:
   batch_size: 32
+
+models:
+  linear_cnn:
+    input_len: 9
+    out_features1: 64
+    out_features2: 32
+    bias: true
+  convolutional_cnn:
+    input_len: 9
+    out_features1: 64
+    out_features2: 32
+    kernel_size: 3
+    padding: 1
