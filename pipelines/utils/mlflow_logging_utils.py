@@ -1,4 +1,7 @@
 import mlflow
+from torchinfo import summary
+
+from pipelines.src.evaluate_v2 import test_loader
 
 
 def mlflow_epochs_logs(epoch_df):
@@ -21,3 +24,23 @@ def mlflow_torch_params(model, optimizer, additional_params=None):
         ml_params.update(additional_params)
 
     mlflow.log_params(ml_params)
+
+
+def mlflow_model_log_summary(model):
+    with open("model_summary.txt", "w") as f:
+        f.write(str(summary(model)))
+    mlflow.log_artifact("model_summary.txt")
+    mlflow.pytorch.log_model(model, "model")
+
+
+def mlflow_evaluate_metrics(results_df, test_loss_avg):
+    mlflow.log_metric("average_test_loss", test_loss_avg)
+    for index, row in results_df.iterrows():
+        category = row['Metric']
+        mlflow.log_metric(f"{category}_RMSE_y1", row["Common Flares (y1)"])
+        mlflow.log_metric(f"{category}_RMSE_y2", row["Moderate Flares (y2)"])
+        mlflow.log_metric(f"{category}_RMSE_y3", row["Severe Flares (y3)"])
+
+    results_df.to_csv("evaluation_metrics.csv", index=False)
+    mlflow.log_artifact("evaluation_metrics.csv")
+
