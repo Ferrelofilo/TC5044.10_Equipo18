@@ -1,8 +1,4 @@
 stages:
-  download_data:
-    cmd: python pipelines\utils\dataset.py
-    outs: 
-    - data/raw/flare_data2_df.csv 
   load_data:
     cmd: python pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
     deps:

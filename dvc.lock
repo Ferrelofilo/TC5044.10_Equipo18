@@ -1,7 +1,7 @@
 schema: '2.0'
 stages:
   load_data:
-    cmd: python3 pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
+    cmd: python pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
     deps:
     - path: data/raw/flare_data2_df.csv
       hash: md5
@@ -21,7 +21,7 @@ stages:
       md5: 9d01a38e43794aed1b844d410e06db89
       size: 8967
   preprocess:
-    cmd: python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
+    cmd: python pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
       data/processed/X_train.pt data/processed/X_test.pt data/processed/y_train.pt
       data/processed/y_test.pt
     deps:
@@ -53,13 +53,6 @@ stages:
       hash: md5
       md5: 4d60b4745e4cbd004bb42e86ba19e1a5
       size: 5140
-  download_data:
-    cmd: python3 pipelines/src/etl.py
-    outs:
-    - path: data/raw/flare_data2_df.csv
-      hash: md5
-      md5: 9d01a38e43794aed1b844d410e06db89
-      size: 8967
   train_model:
     cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt
       models/
