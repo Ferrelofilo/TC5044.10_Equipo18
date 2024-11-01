@@ -1,6 +1,6 @@
 stages:
   load_data:
-    cmd: python pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
+    cmd: python pipelines/src/load_data.py data\raw\flare.data2 data/processed/train_test_data.csv
     deps:
     - data/raw/flare_data2_df.csv
     - pipelines/src/load_data.py
