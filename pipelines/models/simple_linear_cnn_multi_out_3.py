@@ -21,10 +21,10 @@ class SimpleLinearCnnMO3(nn.Module):
         return y1, y2, y3
 
 class ConvolutionalSimpleModel(nn.Module):
-    def __init__(self, input_len=10, out_features1=64, out_features2=32, bias=True):
+    def __init__(self, input_len=10, out_features1=64, out_features2=32, kernel_size=3, padding=1):
         super(ConvolutionalSimpleModel, self).__init__()
-        self.conv1 = nn.Conv1d(in_channels=1, out_channels=out_features1, kernel_size=3, padding=1)
-        self.conv2 = nn.Conv1d(in_channels=out_features1, out_channels=out_features2, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv1d(in_channels=1, out_channels=out_features1, kernel_size=kernel_size, padding=padding)
+        self.conv2 = nn.Conv1d(in_channels=out_features1, out_channels=out_features2, kernel_size=kernel_size, padding=padding)
         #Could add batch normalization
         self.flatten = nn.Flatten()
         self.y1_output = nn.Linear(out_features2 * input_len, 1)  # Adjusting input size
