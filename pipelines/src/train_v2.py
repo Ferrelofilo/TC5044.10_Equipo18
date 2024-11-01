@@ -30,7 +30,7 @@ def create_model(input_len=9):
     return model, optimizer, criterion, rmse_metric
 
 
-def train_model_v2(X_train_path, y_train_path):
+def train_model_v2(X_train_path, y_train_path, model_type):
     x = torch.load(X_train_path)
     y = torch.load(y_train_path)
 
@@ -50,8 +50,10 @@ def train_model_v2(X_train_path, y_train_path):
 if __name__ == "__main__":
     X_train_path = sys.argv[1]
     y_train_path = sys.argv[2]
-    model_path = sys.argv[3]
+    model_type = sys.argv[3]
     run_id_out = sys.argv[4]
+    model_dir = params['data']['models']
+    model_path = f"{model_dir}/{model_type}_model.pth"
 
     mlflow.set_experiment(params['mlflow']['experiment_name'])
     mlflow.set_tracking_uri(params['mlflow']['tracking_uri'])
