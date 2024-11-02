@@ -60,6 +60,6 @@ stages:
     deps:
       - data/processed/X_test.pt  
       - data/processed/y_test.pt
-      -  models/convolutional_cnn_model.pth
+      - models/convolutional_cnn_model.pth
     params:
       - evaluation.batch_size  
