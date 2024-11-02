@@ -131,9 +131,9 @@ class MultiOutCnnHandler:
         results_df = pd.DataFrame(
             {
                 "Metric": ["RMSE", "MAE", "R²"],
-                "Common Flares (y1)": [rmse_y1_value, mae_y1, r2_y1, y1, outputs_y1],
-                "Moderate Flares (y2)": [rmse_y2_value, mae_y2, r2_y2, y2, outputs_y2],
-                "Severe Flares (y3)": [rmse_y3_value, mae_y3, r2_y3, y3, outputs_y3]
+                "Common Flares (y1)": [rmse_y1_value, mae_y1, r2_y1],
+                "Moderate Flares (y2)": [rmse_y2_value, mae_y2, r2_y2],
+                "Severe Flares (y3)": [rmse_y3_value, mae_y3, r2_y3]
             }
         )
 
