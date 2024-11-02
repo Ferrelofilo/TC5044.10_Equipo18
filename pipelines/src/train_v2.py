@@ -1,5 +1,6 @@
 import json
 import sys
+import os
 
 import torchmetrics
 import yaml
@@ -11,11 +12,10 @@ import mlflow
 from torch import optim, nn
 from torchinfo import summary
 
-from pipelines.models.cnn_handler import MultiOutCnnHandler
-from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, train_model, ConvolutionalSimpleModel
-from pipelines.utils.data_utils import create_dataloader
-from pipelines.utils.mlflow_logging_utils import mlflow_epochs_logs, mlflow_torch_params, mlflow_model_log_summary
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
+from pipelines.models import MultiOutCnnHandler, SimpleLinearCnnMO3, ConvolutionalSimpleModel
+from pipelines.utils import create_dataloader, mlflow_epochs_logs, mlflow_torch_params, mlflow_model_log_summary
 
 def load_params():
     with open("params.yaml", 'r') as ymlfile:
@@ -39,7 +39,7 @@ def cnn_model_train(X_train_path, y_train_path, model_type):
     mlflow_epochs_logs(epoch_df)
 
     ml_params = {"epochs": 10, "batch_size": 32, "shuffle": True}
-    mlflow_torch_params(mo_cnn_handler.model, mo_cnn_handler.optimizer, additional_params=ml_params)
+    mlflow_torch_params(mo_cnn_handler.model, mo_cnn_handler.optimizer, mo_cnn_handler.criterion, additional_params=ml_params)
 
     return mo_cnn_handler
 

@@ -7,10 +7,17 @@ import mlflow.sklearn
 import yaml
 import torch
 
-from pipelines.models.cnn_handler import MultiOutCnnHandler
-from pipelines.utils.mlflow_logging_utils import mlflow_evaluate_metrics
-from pipelines.utils.plots import plot_loss_curve,plot_actual_vs_predicted
-from pipelines.utils.data_utils import create_dataloader
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+
+from pipelines.models import MultiOutCnnHandler
+
+from pipelines.utils import (
+    mlflow_evaluate_metrics,
+    plot_loss_curve,
+    plot_actual_vs_predicted,
+    create_dataloader,
+)
+
 def load_params():
     with open("params.yaml", 'r') as ymlfile:
         cfg = yaml.safe_load(ymlfile)
