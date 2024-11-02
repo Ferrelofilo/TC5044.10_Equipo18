@@ -35,14 +35,8 @@ class RMSEMetric:
         """
         Calcula el RMSE promedio para cada salida (common, moderate, severe flares).
         """
-        rmse_y1 = torch.sqrt(
-            torch.tensor(self.sum_squared_errors_y1 / self.num_samples)
-        )
-        rmse_y2 = torch.sqrt(
-            torch.tensor(self.sum_squared_errors_y2 / self.num_samples)
-        )
-        rmse_y3 = torch.sqrt(
-            torch.tensor(self.sum_squared_errors_y3 / self.num_samples)
-        )
+        rmse_y1 = torch.sqrt(torch.tensor(self.sum_squared_errors_y1 / self.num_samples))
+        rmse_y2 = torch.sqrt(torch.tensor(self.sum_squared_errors_y2 / self.num_samples))
+        rmse_y3 = torch.sqrt(torch.tensor(self.sum_squared_errors_y3 / self.num_samples))
 
         return rmse_y1, rmse_y2, rmse_y3

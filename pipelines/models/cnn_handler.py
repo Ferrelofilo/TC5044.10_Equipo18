@@ -12,7 +12,13 @@ from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, C
 
 
 class MultiOutCnnHandler:
-    def __init__(self, cnn_type: str, model_params: Optional[Dict[str, any]] = None, optimizer_params: Optional[Dict[str, any]] = None, criterion = None):
+    def __init__(
+        self,
+        cnn_type: str,
+        model_params: Optional[Dict[str, any]] = None,
+        optimizer_params: Optional[Dict[str, any]] = None,
+        criterion=None,
+    ):
         """
         Initialize ModelHandler with a model type (cnn_type), optional model parameters, optimizer parameters, and a criterion.
         """
@@ -26,9 +32,9 @@ class MultiOutCnnHandler:
 
     def create_model(self):
         """Creates and initializes the model based on cnn_type."""
-        if self.cnn_type == 'linear_cnn':
+        if self.cnn_type == "linear_cnn":
             return SimpleLinearCnnMO3(**self.model_params)
-        elif self.cnn_type == 'convolutional_cnn':
+        elif self.cnn_type == "convolutional_cnn":
             return ConvolutionalSimpleModel(**self.model_params)
         else:
             raise ValueError(f"Unknown model type: {self.cnn_type}")
@@ -60,16 +66,11 @@ class MultiOutCnnHandler:
                 self.rmse_metric.update(outputs_y3, y3)
 
             epoch_rmse = self.rmse_metric.compute().item()
-            epochs_data.append({
-                "epoch": epoch + 1,
-                "average_loss": running_loss / len(dataloader),
-                "rmse": epoch_rmse
-            })
+            epochs_data.append({"epoch": epoch + 1, "average_loss": running_loss / len(dataloader), "rmse": epoch_rmse})
 
         return pd.DataFrame(epochs_data)
 
-
-    def evaluate_multi_output_metrics(self,test_loader, criterion):
+    def evaluate_multi_output_metrics(self, test_loader, criterion):
         self.model.eval()
 
         rmse_y1 = torchmetrics.MeanSquaredError(squared=False)
@@ -133,7 +134,7 @@ class MultiOutCnnHandler:
                 "Metric": ["RMSE", "MAE", "R²"],
                 "Common Flares (y1)": [rmse_y1_value, mae_y1, r2_y1, y1, outputs_y1],
                 "Moderate Flares (y2)": [rmse_y2_value, mae_y2, r2_y2, y2, outputs_y2],
-                "Severe Flares (y3)": [rmse_y3_value, mae_y3, r2_y3, y3, outputs_y3]
+                "Severe Flares (y3)": [rmse_y3_value, mae_y3, r2_y3, y3, outputs_y3],
             }
         )
 
@@ -157,7 +158,6 @@ class MultiOutCnnHandler:
         print(f"Model and parameters saved at {model_path}")
 
     def load_model(self, model_path: str):
-
         loaded_state = torch.load(model_path)
 
         # Recreate the model, optimizer, and criterion with saved configurations

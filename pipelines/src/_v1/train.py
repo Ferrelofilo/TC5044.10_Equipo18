@@ -106,9 +106,7 @@ class TrainingSession:
             mlflow.pytorch.log_model(self.model, "model")
             with open("model_summary.txt", "w") as f:
                 f.write(str(summary(self.model)))
-            mlflow.log_artifact(
-                local_path="model_summary.txt", artifact_path="model_summary.txt"
-            )
+            mlflow.log_artifact(local_path="model_summary.txt", artifact_path="model_summary.txt")
 
         # Devuelve los datos del entrenamiento como un DataFrame
         return pd.DataFrame(epochs_data)

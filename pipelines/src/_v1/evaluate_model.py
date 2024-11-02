@@ -24,9 +24,7 @@ class ModelEvaluator:
     criterion: torch.nn.Module
     rmse_metric: any
     output_folder: str
-    model_path: str = (
-        "models/flare_model.pth"  # Ruta donde se encuentra el modelo entrenado
-    )
+    model_path: str = "models/flare_model.pth"  # Ruta donde se encuentra el modelo entrenado
 
     def load_model(self):
         """Carga los pesos del modelo desde un archivo."""

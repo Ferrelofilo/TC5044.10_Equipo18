@@ -10,8 +10,11 @@ from sklearn.preprocessing import OrdinalEncoder
 
 
 def target_output(data):
-    return [np.array(data.pop("common flares")), np.array(data.pop("moderate flares")),
-            np.array(data.pop("severe flares"))]
+    return [
+        np.array(data.pop("common flares")),
+        np.array(data.pop("moderate flares")),
+        np.array(data.pop("severe flares")),
+    ]
 
 
 def split_data(data_df, test_size=0.2, random_state=42):
@@ -33,9 +36,10 @@ def preprocess_data(data_path):
     data_df = pd.read_csv(data_path)
     columns_to_encode = ["modified Zurich class", "largest spot size", "spot distribution"]
     pipeline = Pipeline(
-        [("encode", make_column_transformer((OrdinalEncoder(), columns_to_encode), remainder="passthrough")),
-         # ('scale', MinMaxScaler()),  Podemos ir agregando más transformaciones de ser necesario.
-         ]
+        [
+            ("encode", make_column_transformer((OrdinalEncoder(), columns_to_encode), remainder="passthrough")),
+            # ('scale', MinMaxScaler()),  Podemos ir agregando más transformaciones de ser necesario.
+        ]
     )
     encoded_scaled = pipeline.fit_transform(data_df)
     data_df_processed = pd.DataFrame(encoded_scaled, index=data_df.index, columns=data_df.columns)
@@ -44,7 +48,7 @@ def preprocess_data(data_path):
     return X_train, X_test, y_train, y_test
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     data_path = sys.argv[1]
     output_train_features = sys.argv[2]
     output_test_features = sys.argv[3]
