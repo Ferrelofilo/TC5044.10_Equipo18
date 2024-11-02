@@ -25,7 +25,7 @@ if __name__ == '__main__':
     y_test_path = sys.argv[2]
     model_path = sys.argv[3]
     run_id_path = params['mlflow']['runs']
-    report_file_path = sys.argv[5]
+    #report_file_path = sys.argv[5]
     model_type = os.path.basename(model_path).split('_model.pth')[0]  # model_path contiene el nombre del tipo.
 
     with open(run_id_path, "r") as file:

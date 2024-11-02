@@ -9,8 +9,9 @@ stages:
     - data.processed
     outs:
     - data/processed/train_test_data.csv
+
   preprocess:
-    cmd: python pipelines/src/preprocess_v2.py data/processed/train_test_data.csv data/processed/X_test.pt
+    cmd: PYTHONPATH=. python pipelines/src/preprocess_v2.py data/processed/train_test_data.csv data/processed/X_test.pt
      data/processed/X_train.pt data/processed/y_test.pt data/processed/y_train.pt
     deps:
     - data/processed/train_test_data.csv
@@ -22,33 +23,43 @@ stages:
     - data/processed/X_train.pt
     - data/processed/y_test.pt
     - data/processed/y_train.pt
+
   train_model_linear:
-    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt linear
+    cmd: PYTHONPATH=. python pipelines/src/train_v2.py data/processed/X_train.pt data/processed/y_train.pt linear_cnn
     deps:
-      - pipelines/src/train.py
+      - pipelines/src/train_v2.py
       - data/processed/X_train.pt
       - data/processed/y_train.pt
     params:
-      - train.epochs
+      - model.linear_cnn
+    outs:
+      - models/linear_cnn_model.pth
+
   train_model_convolutional:
-    cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt convolutional
+    cmd: PYTHONPATH=. python pipelines/src/train_v2.py data/processed/X_train.pt data/processed/y_train.pt convolutional_cnn
     deps:
-      - pipelines/src/train.py
+      - pipelines/src/train_v2.py
       - data/processed/X_train.pt
       - data/processed/y_train.pt
     params:
-      - train.epochs
+      - model.convolutional_cnn
+    outs:
+      - models/convolutional_cnn_model.pth
+
   evaluate_model_linear:
-    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt
+    cmd: PYTHONPATH=. python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt models/linear_cnn_model.pth
     deps:
       - data/processed/X_test.pt  
       - data/processed/y_test.pt
+      - models/linear_cnn_model.pth
     params:
       - evaluation.batch_size  
+
   evaluate_model_convolutional:
-    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt
+    cmd: PYTHONPATH=. python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt models/convolutional_cnn_model.pth
     deps:
       - data/processed/X_test.pt  
       - data/processed/y_test.pt
+      -  models/convolutional_cnn_model.pth
     params:
       - evaluation.batch_size  
