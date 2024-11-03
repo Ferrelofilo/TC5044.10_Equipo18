@@ -1,6 +1,7 @@
 import pandas as pd
 import torch
 import torch.nn as nn
+
 import torch.optim as optim
 from pipelines.models import MultiOutCnnHandler
 from pipelines.transformers import get_flare_transformer
@@ -23,45 +24,21 @@ DATASET_FILE_PATH = os.path.join(BASE_DIR, "data", "raw", "flare_data2_df.csv")
 
 
 class SimplePipeline:
-    def __init__(self):
-        self.frame = None
-        self.X_train, self.X_test, self.y_train, self.y_test = None, None, None, None
-        self.model = None
-        self.load_dataset()
+    def __init__(self, input_len=10, out_features1=64, out_features2=32, bias=True):
+        super(SimplePipeline, self).__init__()
+        self.first_dense = nn.Linear(input_len, out_features1, bias=bias)
+        self.second_dense = nn.Linear(out_features1, out_features2, bias=bias)
+        self.y1_output = nn.Linear(out_features2, 1)
+        self.y2_output = nn.Linear(out_features2, 1)
+        self.y3_output = nn.Linear(out_features2, 1)
 
-    def load_dataset(self):
-        """Loading the dataset, and make the train, test, split."""
-        dataset = pd.read_csv(DATASET_FILE_PATH)
-        pipeline = get_flare_transformer()
-        encoded = pipeline.fit_transform(dataset)
-        data_df_processed = pd.DataFrame(encoded, index=dataset.index, columns=dataset.columns)
-        self.X_train, self.X_test, self.y_train, self.y_test = split_data(data_df_processed)
-
-    def train(self, model_class, epochs=100, learning_rate=0.01):
-        self.model = model_class(self.X_train.shape[1])
-        criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
-
-        for epoch in range(epochs):
-            optimizer.zero_grad()
-            outputs = self.model(self.X_train)
-            loss = criterion(outputs, self.y_train)
-            loss.backward()
-            optimizer.step()
-
-    def predict(self, input_data):
-        with torch.no_grad():
-            outputs = self.model(input_data)
-            _, predicted = torch.max(outputs, 1)
-        return predicted
-
-    def get_accuracy(self):
-        predictions = self.predict(self.X_test)
-        return accuracy_score(self.y_test, predictions)
-
-    def run_pipeline(self, model_class):
-        self.load_dataset()
-        self.train(model_class)
+    def forward(self, x):
+        x = torch.relu(self.first_dense(x))
+        x = torch.relu(self.second_dense(x))
+        y1 = self.y1_output(x)  # common_flares
+        y2 = self.y2_output(x)  # moderate_flares
+        y3 = self.y3_output(x)  # severe_flares
+        return y1, y2, y3
 
 
 class PipelineWithFeatureEngineering(SimplePipeline):
@@ -80,21 +57,10 @@ class PipelineWithFeatureEngineering(SimplePipeline):
         self.train(model_class)
 
 
-class SimpleNN(nn.Module):
-    def __init__(self, input_dim):
-        super(SimpleNN, self).__init__()
-        self.fc = nn.Linear(input_dim, 3)  # Assuming 3 classes for the solar flare dataset
-
-    def forward(self, x):
-        return self.fc(x)
-
-
 @pytest.fixture
 def pipelines():
     pipeline_v1 = SimplePipeline()
     pipeline_v2 = PipelineWithFeatureEngineering()
-    pipeline_v1.run_pipeline(SimpleNN)
-    pipeline_v2.run_pipeline(SimpleNN)
     return pipeline_v1, pipeline_v2
 
 
