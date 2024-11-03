@@ -1,12 +1,11 @@
 # Importing required libraries
 import pandas as pd
-import numpy as np
 
 from sklearn import datasets
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import mean_squared_error, accuracy_score
+from sklearn.metrics import accuracy_score
 
 import pytest
 
@@ -68,6 +67,7 @@ class PipelineWithFeatureEngineering(SimplePipeline):
         self.scaler.fit(self.X_train)
         self.X_train = self.scaler.transform(self.X_train)
         self.X_test = self.scaler.transform(self.X_test)
+
     def predict(self, input_data):
         # Applying the scaler before making the predictions.
         scaled_input_data = self.scaler.transform(input_data)
@@ -89,7 +89,6 @@ def pipelines():
     pipeline_v1.run_pipeline()
     pipeline_v2.run_pipeline()
     return pipeline_v1, pipeline_v2
-
 
 
 def test_accuracy_higher_than_benchmark(pipelines):

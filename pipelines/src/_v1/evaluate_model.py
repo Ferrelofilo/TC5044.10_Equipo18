@@ -1,3 +1,4 @@
+from utils.logger_setup import setup_logger
 import os
 import sys
 from dataclasses import dataclass
@@ -10,7 +11,7 @@ import json
 
 # Initialize logger
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
-from utils.logger_setup import setup_logger
+
 
 logger = setup_logger(__name__)
 

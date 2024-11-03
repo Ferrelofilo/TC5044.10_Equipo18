@@ -1,11 +1,10 @@
+from utils.logger_setup import setup_logger
 import json
 import os
 import sys
-import uuid
 from torchinfo import summary
 
 from dataclasses import dataclass
-from datetime import datetime
 
 import mlflow
 import mlflow.pytorch
@@ -17,7 +16,6 @@ from torch.utils.data import DataLoader
 
 # Inicializa el logger
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
-from utils.logger_setup import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -116,8 +114,8 @@ class TrainingSession:
     def save_model_artifacts(self, epochs_df: pd.DataFrame):
         """Guarda los artefactos del modelo y los datos del entrenamiento como JSON y CSV."""
         os.makedirs(self.output_folder, exist_ok=True)
-        date_str = datetime.now().strftime("%Y-%m-%d")
-        artifacts_dir = os.path.join(self.output_folder, f"artifacts_")
+        # date_str = datetime.now().strftime("%Y-%m-%d")
+        artifacts_dir = os.path.join(self.output_folder, "artifacts_")
         os.makedirs(artifacts_dir, exist_ok=True)
 
         model_weights_path = os.path.join(artifacts_dir, "model_weights.pth")

@@ -3,7 +3,6 @@ from pipelines.src.preprocess_v2 import preprocess_data
 
 import pandas as pd
 import torch
-import pytest
 import sys
 import os
 
@@ -12,7 +11,7 @@ sys.path.append(".")
 
 
 # Prueba para la función load_data usando un archivo real
-def test_load_data(file_path="data/raw/flare_data2_df.csv"):
+def test_load_data(file_path=os.path.join("data", "raw", "flare_data2_df.csv.dvc")):
     # Llama a la función y realiza las verificaciones
     result = load_data(file_path)
     assert result is not None, "Se esperaba un resultado no nulo para load_data"
@@ -23,7 +22,7 @@ def test_load_data(file_path="data/raw/flare_data2_df.csv"):
 
 
 # Prueba para la función preprocess_data usando un archivo real
-def test_preprocess_data(file_path="data/raw/flare_data2_df.csv"):
+def test_preprocess_data(file_path=os.path.join("data", "raw", "flare_data2_df.csv")):
     # Llama a la función y realiza las verificaciones
     result = preprocess_data(file_path)
     assert result is not None, "Se esperaba un resultado no nulo para preprocess_data"

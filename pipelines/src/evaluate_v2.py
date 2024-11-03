@@ -1,3 +1,9 @@
+from pipelines.models import MultiOutCnnHandler
+from pipelines.utils import (
+    mlflow_evaluate_metrics,
+    create_dataloader,
+)
+
 import json
 import os
 import sys
@@ -8,15 +14,6 @@ import yaml
 import torch
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-
-from pipelines.models import MultiOutCnnHandler
-
-from pipelines.utils import (
-    mlflow_evaluate_metrics,
-    plot_loss_curve,
-    plot_actual_vs_predicted,
-    create_dataloader,
-)
 
 
 def load_params():
