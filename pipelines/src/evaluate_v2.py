@@ -43,6 +43,10 @@ if __name__ == '__main__':
 
     # Start the MLflow run
     with mlflow.start_run(run_id=run_id):
+        run_id = run.info.run_id
+        with open(run_id_out, "w") as f:
+            json.dump({"run_id": run_id}, f)
+            
         # Add a tag to indicate these are evaluation metrics
         mlflow.set_tag("phase", "evaluation")
         results_df,total_test_loss = evaluate_multi_output_metrics(model, test_loader, criterion, report_file_path)
