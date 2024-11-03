@@ -1,14 +1,16 @@
-from pipelines.src.load_data import load_data
 import pandas as pd
-import os
-
-from sklearn import datasets
-from sklearn.linear_model import LogisticRegression
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from pipelines.transformers import get_flare_transformer
+from pipelines.utils.data_utils import target_output
+from pipelines.utils import split_data
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler, OrdinalEncoder
 from sklearn.metrics import accuracy_score
-
 import pytest
+import os
 
 # Get the absolute path of the current script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,82 +20,80 @@ BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../"))
 
 DATASET_FILE_PATH = os.path.join(BASE_DIR, "data", "raw", "flare_data2_df.csv")
 
-# Getting the data
-iris = datasets.load_iris()
-
-# Simple setup in the data
-iris_df = pd.DataFrame(iris.data, columns=iris.feature_names)
-iris_df['target'] = iris.target
-
 
 class SimplePipeline:
     def __init__(self):
         self.frame = None
-        # Each value is None when we instantiate the class
-        self.X_train, self.X_test, self.y_train, self.Y_test = None, None, None, None
+        self.X_train, self.X_test, self.y_train, self.y_test = None, None, None, None
         self.model = None
         self.load_dataset()
 
     def load_dataset(self):
         """Loading the dataset, and make the train, test, split."""
-        dataset = datasets.load_iris()
+        dataset = pd.read_csv(DATASET_FILE_PATH)
+        pipeline = get_flare_transformer()
+        encoded = pipeline.fit_transform(dataset)
+        data_df_processed = pd.DataFrame(encoded, index=dataset.index, columns=dataset.columns)
+        self.X_train, self.X_test, self.y_train, self.y_test = split_data(data_df_processed)
 
-        # Removing the units (cm) from the headers
-        self.feature_names = [fn[:-5] for fn in dataset.feature_names]
-        self.frame = pd.DataFrame(dataset.data, columns=self.feature_names)
-        self.frame['target'] = dataset.target
+    def train(self, model_class, epochs=100, learning_rate=0.01):
+        self.model = model_class(self.X_train.shape[1])
+        criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(self.model.parameters(), lr=learning_rate)
 
-        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            self.frame[self.feature_names], self.frame.target, test_size=0.65, random_state=42)
-
-    def train(self, algorithm=LogisticRegression):
-
-        self.model = algorithm(solver='lbfgs', multi_class='auto')
-        self.model.fit(self.X_train, self.y_train)
+        for epoch in range(epochs):
+            optimizer.zero_grad()
+            outputs = self.model(self.X_train)
+            loss = criterion(outputs, self.y_train)
+            loss.backward()
+            optimizer.step()
 
     def predict(self, input_data):
-        return self.model.predict(input_data)
+        with torch.no_grad():
+            outputs = self.model(input_data)
+            _, predicted = torch.max(outputs, 1)
+        return predicted
 
     def get_accuracy(self):
-        return self.model.score(X=self.X_test, y=self.y_test)
+        predictions = self.predict(self.X_test)
+        return accuracy_score(self.y_test, predictions)
 
-    def run_pipeline(self):
-        """Execution method for running the pipeline several times."""
+    def run_pipeline(self, model_class):
         self.load_dataset()
-        self.train()
+        self.train(model_class)
 
 
 class PipelineWithFeatureEngineering(SimplePipeline):
     def __init__(self):
-        # Calling the inherit method SimplePipeline __init__ first.
         super().__init__()
-
-        # Standardizing the variables in the dataset.
         self.scaler = StandardScaler()
 
     def apply_scaler(self):
-        # Fitting the scaler on the training data and then applying it to both training and testing data.
         self.scaler.fit(self.X_train)
-        self.X_train = self.scaler.transform(self.X_train)
-        self.X_test = self.scaler.transform(self.X_test)
+        self.X_train = torch.tensor(self.scaler.transform(self.X_train), dtype=torch.float32)
+        self.X_test = torch.tensor(self.scaler.transform(self.X_test), dtype=torch.float32)
 
-    def predict(self, input_data):
-        # Applying the scaler before making the predictions.
-        scaled_input_data = self.scaler.transform(input_data)
-        return self.model.predict(scaled_input_data)
-
-    def run_pipeline(self):
+    def run_pipeline(self, model_class):
         self.load_dataset()
         self.apply_scaler()
-        self.train()
+        self.train(model_class)
+
+
+class SimpleNN(nn.Module):
+    def __init__(self, input_dim):
+        super(SimpleNN, self).__init__()
+        self.fc = nn.Linear(input_dim, 3)  # Assuming 3 classes for the solar flare dataset
+
+    def forward(self, x):
+        return self.fc(x)
 
 
 @pytest.fixture
 def pipelines():
     pipeline_v1 = SimplePipeline()
     pipeline_v2 = PipelineWithFeatureEngineering()
-    pipeline_v1.run_pipeline()
-    pipeline_v2.run_pipeline()
+    pipeline_v1.run_pipeline(SimpleNN)
+    pipeline_v2.run_pipeline(SimpleNN)
     return pipeline_v1, pipeline_v2
 
 
@@ -126,3 +126,9 @@ def test_accuracy_compared_to_previous_version(pipelines):
 
     # Comparing the accuracy of the second model against the first one
     assert v2_accuracy >= v1_accuracy
+
+
+
+if __name__ == "__main__":
+    test_accuracy_higher_than_benchmark(pipelines())
+    test_accuracy_compared_to_previous_version(pipelines())
