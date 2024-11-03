@@ -1,5 +1,6 @@
 from pipelines.src.load_data import load_data
 from pipelines.src.preprocess_v2 import preprocess_data
+from pipelines.utils import create_dataloader
 
 import pandas as pd
 import torch
@@ -52,6 +53,12 @@ def test_preprocess_data(file_path=DATASET_FILE_PATH):
     assert (
         len(result[3]) == 3
     ), "Se esperaba que y_test tenga 3 tensores por cada target"
+
+    X_train, X_test, y_train, y_test = result
+    data_loader = create_dataloader(x=X_train, y=y_train)
+    assert (
+        type(data_loader.dataset).__name__ == "FlareDataset"
+    ), "Se espera que el tipo de dataset herede de FlareDataset"
 
 
 if __name__ == "__main__":
