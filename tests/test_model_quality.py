@@ -1,5 +1,6 @@
-# Importing required libraries
+from pipelines.src.load_data import load_data
 import pandas as pd
+import os
 
 from sklearn import datasets
 from sklearn.linear_model import LogisticRegression
@@ -8,6 +9,14 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
 
 import pytest
+
+# Get the absolute path of the current script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Navigate up to the project root directory
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../"))
+
+DATASET_FILE_PATH = os.path.join(BASE_DIR, "data", "raw", "flare_data2_df.csv")
 
 # Getting the data
 iris = datasets.load_iris()
@@ -77,9 +86,6 @@ class PipelineWithFeatureEngineering(SimplePipeline):
         self.load_dataset()
         self.apply_scaler()
         self.train()
-
-
-iris_df['target'].value_counts()
 
 
 @pytest.fixture

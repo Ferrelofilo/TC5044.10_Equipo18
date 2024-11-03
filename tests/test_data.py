@@ -3,15 +3,19 @@ from pipelines.src.preprocess_v2 import preprocess_data
 
 import pandas as pd
 import torch
-import sys
 import os
 
+# Get the absolute path of the current script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-sys.path.append(".")
+# Navigate up to the project root directory
+BASE_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "../"))
+
+DATASET_FILE_PATH = os.path.join(BASE_DIR, "data", "raw", "flare_data2_df.csv")
 
 
 # Prueba para la función load_data usando un archivo real
-def test_load_data(file_path=os.path.join("data", "raw", "flare_data2_df.csv.dvc")):
+def test_load_data(file_path=DATASET_FILE_PATH):
     # Llama a la función y realiza las verificaciones
     result = load_data(file_path)
     assert result is not None, "Se esperaba un resultado no nulo para load_data"
@@ -22,7 +26,7 @@ def test_load_data(file_path=os.path.join("data", "raw", "flare_data2_df.csv.dvc
 
 
 # Prueba para la función preprocess_data usando un archivo real
-def test_preprocess_data(file_path=os.path.join("data", "raw", "flare_data2_df.csv")):
+def test_preprocess_data(file_path=DATASET_FILE_PATH):
     # Llama a la función y realiza las verificaciones
     result = preprocess_data(file_path)
     assert result is not None, "Se esperaba un resultado no nulo para preprocess_data"
@@ -43,10 +47,10 @@ def test_preprocess_data(file_path=os.path.join("data", "raw", "flare_data2_df.c
     assert len(result[1]) > 0, "Se esperaba que X_test no estuviera vacío"
     # Testing
     assert (
-        len(result[2]) == 0
+        len(result[2]) == 3
     ), "Se esperaba que y_train tenga 3 tensores por cada target"
     assert (
-        len(result[3]) == 0
+        len(result[3]) == 3
     ), "Se esperaba que y_test tenga 3 tensores por cada target"
 
 
