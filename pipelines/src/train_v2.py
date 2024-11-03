@@ -1,26 +1,20 @@
-import json
-import sys
-import os
-
-import torchmetrics
-import yaml
-import sys
-import pandas as pd
-import torch
-import joblib
-import mlflow
-from torch import optim, nn
-from torchinfo import summary
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-
-from pipelines.models import MultiOutCnnHandler, SimpleLinearCnnMO3, ConvolutionalSimpleModel
+from pipelines.models import MultiOutCnnHandler
 from pipelines.utils import (
     create_dataloader,
     mlflow_epochs_logs,
     mlflow_torch_params,
     mlflow_model_log_summary
 )
+
+import json
+import sys
+import os
+import yaml
+import torch
+import mlflow
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+
 
 def load_params():
     """
@@ -72,7 +66,7 @@ if __name__ == "__main__":
     model_path = f"{model_dir}/{model_type}_model.pth"  # model outfile
 
     mlflow.set_experiment(params["mlflow"]["experiment_name"])
-    #mlflow.set_tracking_uri(params["mlflow"]["tracking_uri"])
+    # mlflow.set_tracking_uri(params["mlflow"]["tracking_uri"])
 
     with mlflow.start_run() as run:
         run_id = run.info.run_id
@@ -85,4 +79,3 @@ if __name__ == "__main__":
         mlflow_model_log_summary(cnn.model)
 
         cnn.save_model(model_path)
-

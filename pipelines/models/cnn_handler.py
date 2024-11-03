@@ -12,7 +12,7 @@ from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, C
 
 
 class MultiOutCnnHandler:
-    def __init__(self, cnn_type: str, model_params: Optional[Dict[str, any]] = None, optimizer_params: Optional[Dict[str, any]] = None, criterion = None):
+    def __init__(self, cnn_type: str, model_params: Optional[Dict[str, any]] = None, optimizer_params: Optional[Dict[str, any]] = None, criterion=None):
         """
         Initialize ModelHandler with a model type (cnn_type), optional model parameters, optimizer parameters, and a criterion.
         """
@@ -68,7 +68,7 @@ class MultiOutCnnHandler:
 
         return pd.DataFrame(epochs_data)
 
-    def evaluate_multi_output_metrics(self,test_loader, criterion):
+    def evaluate_multi_output_metrics(self, test_loader, criterion):
         self.model.eval()
 
         rmse_y1 = torchmetrics.MeanSquaredError(squared=False)

@@ -21,7 +21,7 @@ def get_flare_transformer():
                 "encode",
                 make_column_transformer((OrdinalEncoder(), columns_to_encode), remainder="passthrough")
             ),
-         # ('scale', MinMaxScaler()), Podemos ir agregando más transformaciones de ser necesario.
+            # ('scale', MinMaxScaler()), Podemos ir agregando más transformaciones de ser necesario.
         ]
     )
     return pipeline

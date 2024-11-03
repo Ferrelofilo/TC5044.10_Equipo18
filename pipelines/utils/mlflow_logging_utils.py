@@ -1,6 +1,7 @@
 import mlflow
 from torchinfo import summary
 
+
 def mlflow_epochs_logs(epoch_df):
     """
     Registra métricas de entrenamiento en MLflow para cada época del entrenamiento.
@@ -13,7 +14,7 @@ def mlflow_epochs_logs(epoch_df):
         mlflow.log_metric("train_rmse", row["rmse"], step=step)
 
 
-def mlflow_torch_params(model, optimizer,criterion, additional_params=None):
+def mlflow_torch_params(model, optimizer, criterion, additional_params=None):
     """
     Registra los parámetros del modelo y del optimizador en MLflow, incluyendo el tipo de optimizador,
     criterio de pérdida y tasa de aprendizaje.
@@ -43,7 +44,7 @@ def mlflow_model_log_summary(model):
     Args:
         model (torch.nn.Module): Modelo de PyTorch que se desea registrar y resumir.
     """
-    with open("model_summary.txt", "w",encoding="utf-8") as f:
+    with open("model_summary.txt", "w", encoding="utf-8") as f:
         f.write(str(summary(model)))
     mlflow.log_artifact("model_summary.txt")
     mlflow.pytorch.log_model(model, "model")
@@ -65,4 +66,3 @@ def mlflow_evaluate_metrics(results_df, test_loss_avg):
 
     results_df.to_csv("evaluation_metrics.csv", index=False)
     mlflow.log_artifact("evaluation_metrics.csv")
-

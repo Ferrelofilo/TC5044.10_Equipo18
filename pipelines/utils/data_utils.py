@@ -74,5 +74,5 @@ def create_dataloader(x, y, shuffle=True, batch_size=32):
     flare_dataset = FlareDataset(x, y)
 
     dataloader = DataLoader(flare_dataset, batch_size=batch_size, shuffle=shuffle)
-    
+
     return dataloader

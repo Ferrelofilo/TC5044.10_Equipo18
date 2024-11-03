@@ -1,14 +1,13 @@
-import os
-import sys
+from utils.logger_setup import setup_logger
 from dataclasses import dataclass
 from zipfile import ZipFile
-
+import os
+import sys
 import pandas as pd
 import requests
 
 # Initialize logger
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from utils.logger_setup import setup_logger
 
 logger = setup_logger(__name__)
 

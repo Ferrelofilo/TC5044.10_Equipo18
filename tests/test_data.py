@@ -1,3 +1,6 @@
+from pipelines.src.load_data import load_data
+from pipelines.src.preprocess_v2 import preprocess_data
+
 import pandas as pd
 import torch
 import pytest
@@ -6,8 +9,6 @@ import os
 
 
 sys.path.append(".")
-from pipelines.src.load_data import load_data
-from pipelines.src.preprocess_v2 import preprocess_data
 
 
 # Prueba para la función load_data usando un archivo real

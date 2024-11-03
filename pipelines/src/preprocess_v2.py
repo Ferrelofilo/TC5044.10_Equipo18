@@ -1,19 +1,19 @@
+from pipelines.transformers import get_flare_transformer
+from pipelines.utils import split_data
+
 import os
 import sys
-
 import pandas as pd
 import torch
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from pipelines.transformers import get_flare_transformer
-from pipelines.utils import split_data
-
 # Initialize logger
-#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-#from utils.logger_setup import setup_logger
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
+# from utils.logger_setup import setup_logger
 
-#logger = setup_logger(__name__)
+# logger = setup_logger(__name__)
+
 
 def preprocess_data(data_path):
     """
@@ -38,9 +38,9 @@ def preprocess_data(data_path):
 
 
 if __name__ == "__main__":
-    #sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
+    # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-    #logger.debug("Initialize preprocesss")
+    # logger.debug("Initialize preprocesss")
     data_path = sys.argv[1]
     output_train_features = sys.argv[2]
     output_test_features = sys.argv[3]
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     output_test_target = sys.argv[5]
 
     X_train, X_test, y_train, y_test = preprocess_data(data_path)
-    #logger.debug("Saving X_train, X_test, y_train, y_test")
+    # logger.debug("Saving X_train, X_test, y_train, y_test")
     torch.save(X_train, output_train_features)
     torch.save(X_test, output_test_features)
     torch.save(y_train, output_train_target)
