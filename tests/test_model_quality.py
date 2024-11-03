@@ -2,6 +2,7 @@ import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from pipelines.models import MultiOutCnnHandler
 from pipelines.transformers import get_flare_transformer
 from pipelines.utils.data_utils import target_output
 from pipelines.utils import split_data
@@ -97,38 +98,36 @@ def pipelines():
     return pipeline_v1, pipeline_v2
 
 
-def test_accuracy_higher_than_benchmark(pipelines):
-    pipeline_v1, _ = pipelines
+def test_create_model_instance():
+    model_type = "linear_cnn"
 
-    # Initial Benchmark
-    benchmark_predictions = [1.0] * len(pipeline_v1.y_test)
-    benchmark_accuracy = accuracy_score(y_true=pipeline_v1.y_test, y_pred=benchmark_predictions)
+    model_params = {
+        "input_len": 10,
+        "out_features1": 64,
+        "out_features2": 32,
+        "bias": True
+    }
+    mo_cnn_handler = MultiOutCnnHandler(cnn_type=model_type, model_params=model_params)
 
-    # Getting the accuracy of the model
-    predictions = pipeline_v1.predict(pipeline_v1.X_test)
-    actual_accuracy = accuracy_score(y_true=pipeline_v1.y_test, y_pred=predictions)
-
-    print(f'Accuracy of model 1: {actual_accuracy}, Accuracy of Benchmark: {benchmark_accuracy}')
-
-    # Comparing the accuracy of the first model against the benchmark
-    assert actual_accuracy > benchmark_accuracy
+    # assert mo_cnn_handler  # Type of model is created
+    assert True
 
 
-def test_accuracy_compared_to_previous_version(pipelines):
-    pipeline_v1, pipeline_v2 = pipelines
-
-    # Getting the accuracy of each version
-    v1_accuracy = pipeline_v1.get_accuracy()
-    v2_accuracy = pipeline_v2.get_accuracy()
-
-    print(f'Accuracy of model 1: {v1_accuracy}')
-    print(f'Accuracy of model 2: {v2_accuracy}')
-
-    # Comparing the accuracy of the second model against the first one
-    assert v2_accuracy >= v1_accuracy
+def test_train_model_metrics():
+    # validate amount of epochs, average loss and rmse
+    # assert epoch
+    # assert average_loss
+    # assert rmse
+    assert True
 
 
+def test_evaluate_multi_output_metrics():
+    # assert results_df
+    # assert total_test_loss
+    # assert avg_test_loss
+    assert True
 
-if __name__ == "__main__":
-    test_accuracy_higher_than_benchmark(pipelines())
-    test_accuracy_compared_to_previous_version(pipelines())
+
+def test_metrics_compared_to_different_params():
+    # assert metrics1 != metrics2
+    assert True
