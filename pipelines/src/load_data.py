@@ -11,6 +11,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"
 #logger = setup_logger(__name__)
 
 def load_data(filepath):
+    """
+    Carga los datos desde un archivo CSV.
+    Args:
+        filepath (str): Ruta al archivo CSV que se desea cargar.
+    Returns:
+        pd.DataFrame: DataFrame de Pandas con los datos cargados desde el archivo.
+    """
     return pd.read_csv(filepath)
 
 if __name__ == "__main__":

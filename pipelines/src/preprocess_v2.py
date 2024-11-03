@@ -16,12 +16,22 @@ from pipelines.utils import split_data
 #logger = setup_logger(__name__)
 
 def preprocess_data(data_path):
+    """
+    Realiza el preprocesamiento de los datos cargándolos desde un archivo CSV,
+    aplicando transformaciones y dividiéndolos en conjuntos de entrenamiento y prueba.
+    Args:
+        data_path (str): Ruta al archivo CSV con los datos originales.
+    Returns:
+        tuple: Contiene cuatro elementos:
+            X_train (pd.DataFrame): Características para el conjunto de entrenamiento.
+            X_test (pd.DataFrame): Características para el conjunto de prueba.
+            y_train (pd.Series o pd.DataFrame): Objetivo para el conjunto de entrenamiento.
+            y_test (pd.Series o pd.DataFrame): Objetivo para el conjunto de prueba.
+    """
     data_df = pd.read_csv(data_path)
     pipeline = get_flare_transformer()
     encoded = pipeline.fit_transform(data_df)
-    data_df_processed = pd.DataFrame(
-        encoded, index=data_df.index, columns=data_df.columns
-    )
+    data_df_processed = pd.DataFrame(encoded, index=data_df.index, columns=data_df.columns)
 
     X_train, X_test, y_train, y_test = split_data(data_df_processed)
     return X_train, X_test, y_train, y_test

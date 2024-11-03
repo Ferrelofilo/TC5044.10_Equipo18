@@ -7,7 +7,7 @@ from sklearn.metrics import mean_absolute_error, r2_score
 
 
 class SimpleLinearCnnMO3(nn.Module):
-    def __init__(self, input_len=10, out_features1=64,out_features2=32, bias=True):
+    def __init__(self, input_len=10, out_features1=64, out_features2=32, bias=True):
         super(SimpleLinearCnnMO3, self).__init__()
         self.first_dense = nn.Linear(input_len, out_features1, bias=bias)
         self.second_dense = nn.Linear(out_features1, out_features2, bias=bias)

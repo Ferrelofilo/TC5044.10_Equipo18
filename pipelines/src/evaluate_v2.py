@@ -19,7 +19,12 @@ from pipelines.utils import (
 )
 
 def load_params():
-    with open("params.yaml", 'r') as ymlfile:
+    """
+    Carga los parámetros de configuración desde un archivo YAML.
+    Returns:
+        dict: Diccionario con la configuración cargada desde 'params.yaml'.
+    """
+    with open("params.yaml", "r") as ymlfile:
         cfg = yaml.safe_load(ymlfile)
     return cfg
 
@@ -27,13 +32,13 @@ def load_params():
 params = load_params()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     X_test_path = sys.argv[1]
     y_test_path = sys.argv[2]
     model_path = sys.argv[3]
-    run_id_path = params['mlflow']['runs']
+    run_id_path = params["mlflow"]["runs"]
     #report_file_path = sys.argv[5]
-    model_type = os.path.basename(model_path).split('_model.pth')[0]  # model_path contiene el nombre del tipo.
+    model_type = os.path.basename(model_path).split("_model.pth")[0]  # model_path contiene el nombre del tipo.
 
     with open(run_id_path, "r") as file:
         run_data = json.load(file)
@@ -55,6 +60,6 @@ if __name__ == '__main__':
         mlflow_evaluate_metrics(results_df, avg_test_loss)
         #plot_loss_curve(total_test_loss)
         #Actual vs Predicted Visualizations
-        #plot_actual_vs_predicted(results_df['y1'], results_df['outputs_y1'], 'Common Flares')
-        #plot_actual_vs_predicted(results_df['y2'], results_df['outputs_y2'], 'Moderate Flares')
-        #plot_actual_vs_predicted(results_df['y3'], results_df['outputs_y3'], 'Severe Flares')
+        #plot_actual_vs_predicted(results_df["y1"], results_df["outputs_y1"], "Common Flares")
+        #plot_actual_vs_predicted(results_df["y2"], results_df["outputs_y2"], "Moderate Flares")
+        #plot_actual_vs_predicted(results_df["y3"], results_df["outputs_y3"], "Severe Flares")
