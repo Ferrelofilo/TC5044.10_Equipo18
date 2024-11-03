@@ -34,9 +34,9 @@ def mlflow_evaluate_metrics(results_df, test_loss_avg):
     mlflow.log_metric("average_test_loss", test_loss_avg)
     for index, row in results_df.iterrows():
         category = row['Metric']
-        mlflow.log_metric(f"{category}_RMSE_y1", row["Common Flares (y1)"])
-        mlflow.log_metric(f"{category}_RMSE_y2", row["Moderate Flares (y2)"])
-        mlflow.log_metric(f"{category}_RMSE_y3", row["Severe Flares (y3)"])
+        mlflow.log_metric(f"eval_{category}_y1", row["Common Flares (y1)"])
+        mlflow.log_metric(f"eval_{category}_y2", row["Moderate Flares (y2)"])
+        mlflow.log_metric(f"eval_{category}_y3", row["Severe Flares (y3)"])
 
     results_df.to_csv("evaluation_metrics.csv", index=False)
     mlflow.log_artifact("evaluation_metrics.csv")

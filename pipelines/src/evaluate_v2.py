@@ -49,13 +49,12 @@ if __name__ == '__main__':
     cnn.load_model(model_path)  # Load the saved model state
 
     with mlflow.start_run(run_id=run_id):
-        mlflow.set_tag("phase", "evaluation")
 
         results_df, total_test_loss = cnn.evaluate_multi_output_metrics(test_loader, cnn.criterion)
         avg_test_loss = sum(total_test_loss) / len(total_test_loss)
         mlflow_evaluate_metrics(results_df, avg_test_loss)
-        plot_loss_curve(total_test_loss)
+        #plot_loss_curve(total_test_loss)
         #Actual vs Predicted Visualizations
-        plot_actual_vs_predicted(results_df['y1'], results_df['outputs_y1'], 'Common Flares')
-        plot_actual_vs_predicted(results_df['y2'], results_df['outputs_y2'], 'Moderate Flares')
-        plot_actual_vs_predicted(results_df['y3'], results_df['outputs_y3'], 'Severe Flares')
+        #plot_actual_vs_predicted(results_df['y1'], results_df['outputs_y1'], 'Common Flares')
+        #plot_actual_vs_predicted(results_df['y2'], results_df['outputs_y2'], 'Moderate Flares')
+        #plot_actual_vs_predicted(results_df['y3'], results_df['outputs_y3'], 'Severe Flares')

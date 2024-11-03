@@ -61,7 +61,6 @@ if __name__ == "__main__":
             json.dump({model_type: run_id}, f)
 
         mlflow.set_tag("model_type", model_type)
-        mlflow.set_tag("phase", "training")
         cnn = cnn_model_train(X_train_path, y_train_path, model_type)
 
         mlflow_model_log_summary(cnn.model)
