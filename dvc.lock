@@ -1,29 +1,25 @@
 schema: '2.0'
 stages:
   load_data:
-    cmd: python3 pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
+    cmd: python pipelines/src/load_data.py data/raw/flare_data2_df.csv data/processed/train_test_data.csv
     deps:
-    - path: data/raw/flare_data2_df.csv
-      hash: md5
-      md5: 9d01a38e43794aed1b844d410e06db89
-      size: 8967
     - path: pipelines/src/load_data.py
       hash: md5
-      md5: 1922d995cd9c3f439f481bd7747b81f7
-      size: 479
+      md5: a578cf166f9fc8e111c7c38cf3ece439
+      size: 570
     params:
       params.yaml:
         data.filepath: data/raw/flare_data2_df.csv
-        data.processed: data/processed/
+        data.processed: data/processed/train_test_data.csv
     outs:
     - path: data/processed/train_test_data.csv
       hash: md5
       md5: 9d01a38e43794aed1b844d410e06db89
       size: 8967
   preprocess:
-    cmd: python3 pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
-      data/processed/X_train.pt data/processed/X_test.pt data/processed/y_train.pt
-      data/processed/y_test.pt
+    cmd: python pipelines/src/preprocess_v2.py data/processed/train_test_data.csv
+      data/processed/X_test.pt data/processed/X_train.pt data/processed/y_test.pt
+      data/processed/y_train.pt
     deps:
     - path: data/processed/train_test_data.csv
       hash: md5
@@ -31,35 +27,28 @@ stages:
       size: 8967
     - path: pipelines/src/preprocess_v2.py
       hash: md5
-      md5: 81325e9b0849d46193b1ac70c80f19eb
-      size: 1402
+      md5: c6c89ecc80cf175e2a6bae93ab81ed52
+      size: 1449
     params:
       params.yaml:
-        data.processed: data/processed/
+        data.processed: data/processed/train_test_data.csv
     outs:
     - path: data/processed/X_test.pt
       hash: md5
-      md5: 1ff5cf11be1676822f22b8bf5070baea
-      size: 3799
+      md5: 492fc439cd00dc668d02d7444e340cb3
+      size: 11671
     - path: data/processed/X_train.pt
       hash: md5
-      md5: fd95ff2f1ffa46b092ea437765739686
-      size: 11676
+      md5: e560b2bcd12755ab2a72a6777d28c7c8
+      size: 3804
     - path: data/processed/y_test.pt
       hash: md5
-      md5: 2329d51d3f8f1291bbd1a0d1523de1b0
-      size: 2445
+      md5: 6fcafeb6ce48ba4c33c3ece6f1a41f27
+      size: 5133
     - path: data/processed/y_train.pt
       hash: md5
-      md5: 4d60b4745e4cbd004bb42e86ba19e1a5
-      size: 5140
-  download_data:
-    cmd: python3 pipelines/src/etl.py
-    outs:
-    - path: data/raw/flare_data2_df.csv
-      hash: md5
-      md5: 9d01a38e43794aed1b844d410e06db89
-      size: 8967
+      md5: d8ae2572937c2d61d176be894ba3b785
+      size: 2452
   train_model:
     cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt
       models/
@@ -114,3 +103,50 @@ stages:
       md5: 8a287d54ac5d145c331d1f7c40339b31.dir
       size: 118
       nfiles: 2
+  train_model_linear:
+    cmd: python pipelines/src/train_v2.py data/processed/X_train.pt data/processed/y_train.pt
+      linear_cnn
+    deps:
+    - path: data/processed/X_train.pt
+      hash: md5
+      md5: e560b2bcd12755ab2a72a6777d28c7c8
+      size: 3804
+    - path: data/processed/y_train.pt
+      hash: md5
+      md5: d8ae2572937c2d61d176be894ba3b785
+      size: 2452
+    - path: pipelines/src/train_v2.py
+      hash: md5
+      md5: 1029152cda988ab929031cd4c185ef43
+      size: 2112
+    params:
+      params.yaml:
+        models.linear_cnn:
+          input_len: 9
+          out_features1: 64
+          out_features2: 32
+          bias: true
+    outs:
+    - path: data/models/linear_cnn_model.pth
+      hash: md5
+      md5: 10f9e274e1838a26f5a214ff02072246
+      size: 15734
+  evaluate_model_linear:
+    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt
+      data/models/linear_cnn_model.pth
+    deps:
+    - path: data/models/linear_cnn_model.pth
+      hash: md5
+      md5: 10f9e274e1838a26f5a214ff02072246
+      size: 15734
+    - path: data/processed/X_test.pt
+      hash: md5
+      md5: 492fc439cd00dc668d02d7444e340cb3
+      size: 11671
+    - path: data/processed/y_test.pt
+      hash: md5
+      md5: 6fcafeb6ce48ba4c33c3ece6f1a41f27
+      size: 5133
+    params:
+      params.yaml:
+        evaluation.batch_size: 32

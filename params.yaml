@@ -1,8 +1,22 @@
 data:
   filepath: "data/raw/flare_data2_df.csv"
-  processed: data/processed/
-  models: models/
+  processed: "data/processed/train_test_data.csv"
+  models: "data/models"
+
 train:
   epochs: 10
 evaluation:
   batch_size: 32
+
+models:
+  linear_cnn:
+    input_len: 9
+    out_features1: 64
+    out_features2: 32
+    bias: true
+  convolutional_cnn:
+  
+mlflow:
+  experiment_name: "Flare Analysis V2"
+  tracking_uri: "http://127.0.0.1:5000"
+  runs: "data/raw/runs_id.json"
