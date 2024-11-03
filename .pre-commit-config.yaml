@@ -1,0 +1,15 @@
+default_stages: [commit]  # Run only on commit stage
+pass_failing_hooks: true  # Allow commits even if checks fail
+test:
+  - repo: local
+    hooks:
+    - id: pytest
+      name: pytest
+      entry: ./.venv/bin/pytest tests
+      language: system
+repos:
+  - repo: https://github.com/psf/black
+    rev: 23.1.0 
+    hooks:
+      - id: black
+        args: ["--line-length", "120"]

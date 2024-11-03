@@ -1,14 +1,13 @@
-import os
-import sys
+from utils.logger_setup import setup_logger
 from dataclasses import dataclass
 from zipfile import ZipFile
-
+import os
+import sys
 import pandas as pd
 import requests
 
 # Initialize logger
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
-from utils.logger_setup import setup_logger
 
 logger = setup_logger(__name__)
 
@@ -32,24 +31,18 @@ DEFAULT_COLUMN_NAMES = (
 DATA_FILE = "flare.data2"
 
 
-DESTINATION_RAW_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "../../data/raw"
-)
+DESTINATION_RAW_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../data/raw")
 
 
 @dataclass
 class DataIntoLocalFile:
-    data_download_url: str = (
-        "https://archive.ics.uci.edu/static/public/89/solar+flare.zip"
-    )
+    data_download_url: str = "https://archive.ics.uci.edu/static/public/89/solar+flare.zip"
     destination_path: str = DESTINATION_RAW_PATH
 
     def _check_destination_path(self):
         """Check if the destination path exists, if not, create it."""
         if not os.path.exists(self.destination_path):
-            logger.info(
-                f"Destination path {self.destination_path} dxsoes not exist. Creating it."
-            )
+            logger.info(f"Destination path {self.destination_path} dxsoes not exist. Creating it.")
             os.makedirs(self.destination_path)
 
     def download_data(self):
@@ -57,9 +50,7 @@ class DataIntoLocalFile:
         self._check_destination_path()
 
         # Get the filename from the URL
-        filename = os.path.join(
-            self.destination_path, self.data_download_url.split("/")[-1]
-        )
+        filename = os.path.join(self.destination_path, self.data_download_url.split("/")[-1])
 
         try:
             logger.info(f"Downloading data from {self.data_download_url}")
@@ -161,9 +152,7 @@ class CreateDF:
             dp = data_df[data_df.duplicated(keep=False)]
             logger.info(f"Duplicated rows dropped : {dp.duplicated().sum()}")
             data_df.drop_duplicates(inplace=True)
-            data_df.drop(
-                ["area of largest spot"], axis=1, inplace=True
-            )  # solo tiene 1 valor
+            data_df.drop(["area of largest spot"], axis=1, inplace=True)  # solo tiene 1 valor
             self._save_df(data_df)
             logger.info("Raw data saved.")
             return data_df

@@ -87,3 +87,8 @@ coverage.xml
 models/*
 mlruns/
 *.txt
+*.zip
+
+
+# Para los test
+! data/raw/flare_data2_df.csv
