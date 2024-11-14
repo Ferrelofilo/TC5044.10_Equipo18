@@ -15,7 +15,7 @@ stages:
     deps:
     - data/processed/train_test_data.csv
     - pipelines/src/preprocess_v2.py
-    - pipelines/transformers/get_flare_transformer.py
+    - pipelines/transformers/flare_column_transformer.py
     params:
     - data.processed
     outs:

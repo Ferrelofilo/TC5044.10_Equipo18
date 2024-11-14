@@ -1,4 +1,4 @@
-from ..transformers.flare_column_transformer import get_flare_transformer
+from ..transformers import get_flare_transformer
 from pipelines.utils import split_data
 
 import os
