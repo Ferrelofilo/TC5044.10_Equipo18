@@ -1,5 +1,5 @@
-from pipelines.transformers.flare_column_transformer import get_flare_transformer
-from pipelines.utils import split_data
+from transformers.flare_column_transformer import get_flare_transformer
+from utils import split_data
 
 import os
 import sys
