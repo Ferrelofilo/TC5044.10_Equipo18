@@ -5,8 +5,8 @@ stages:
     deps:
     - path: pipelines/src/load_data.py
       hash: md5
-      md5: 5b4cff44ccfaa2ecd9f83bd3f402779b
-      size: 832
+      md5: 1386c493be032d1e9a9d944dd5bcc7d6
+      size: 801
     params:
       params.yaml:
         data.filepath: data/raw/flare_data2_df.csv
@@ -27,32 +27,32 @@ stages:
       size: 9333
     - path: pipelines/src/preprocess_v2.py
       hash: md5
-      md5: ba502300a5bba115685429e09cea540c
-      size: 2152
+      md5: 866f3241a159d95b9a1499a189569cd9
+      size: 2105
     - path: pipelines/transformers/flare_column_transformer.py
       hash: md5
-      md5: abeb5520addd4e327928e0dea0a999ce
-      size: 984
+      md5: 733a3f6ea2db53ca7cec129d3fa2b12a
+      size: 957
     params:
       params.yaml:
         data.processed: data/processed/train_test_data.csv
     outs:
     - path: data/processed/X_test.pt
       hash: md5
-      md5: 5cccd1b7a2719f701969d43af11a3621
-      size: 11671
+      md5: ee8e37036c887ec85b00d470686d62f4
+      size: 11240
     - path: data/processed/X_train.pt
       hash: md5
-      md5: 364e3386146e8543a9d606ae5a41a6fa
-      size: 3804
+      md5: 626ea955a6c4596fe34062acbb96f3f6
+      size: 3371
     - path: data/processed/y_test.pt
       hash: md5
-      md5: 013529e98f01873fdc17cacc4539f1d5
-      size: 5133
+      md5: 358a2d51f56f4c1e31afc62ab9e49df7
+      size: 4702
     - path: data/processed/y_train.pt
       hash: md5
-      md5: 744479003809d2dd2eba96228c86ac52
-      size: 2452
+      md5: 68aecc9e8402fb75f2e3ecd393054879
+      size: 2019
   train_model:
     cmd: python pipelines/src/train.py data/processed/X_train.pt data/processed/y_train.pt
       models/
@@ -113,16 +113,16 @@ stages:
     deps:
     - path: data/processed/X_train.pt
       hash: md5
-      md5: 364e3386146e8543a9d606ae5a41a6fa
-      size: 3804
+      md5: 626ea955a6c4596fe34062acbb96f3f6
+      size: 3371
     - path: data/processed/y_train.pt
       hash: md5
-      md5: 744479003809d2dd2eba96228c86ac52
-      size: 2452
+      md5: 68aecc9e8402fb75f2e3ecd393054879
+      size: 2019
     - path: pipelines/src/train_v2.py
       hash: md5
-      md5: f6821695ea81e6e98d6d81c8f2bcd390
-      size: 2695
+      md5: f25c1d3b7fee49b75fda10361bd75fb7
+      size: 2614
     params:
       params.yaml:
         models.linear_cnn:
@@ -133,28 +133,28 @@ stages:
     outs:
     - path: data/models/linear_cnn_model.pth
       hash: md5
-      md5: 5fce9fe23e55e4c30b4faa57767552f1
-      size: 15734
+      md5: 57b5f3b4c79cc0c36176ce3cd73d46b3
+      size: 15283
   evaluate_model_linear:
     cmd: python -m pipelines.src.evaluate_v2 data/processed/X_test.pt data/processed/y_test.pt
       data/models/linear_cnn_model.pth
     deps:
     - path: data/models/linear_cnn_model.pth
       hash: md5
-      md5: 5fce9fe23e55e4c30b4faa57767552f1
-      size: 15734
+      md5: 57b5f3b4c79cc0c36176ce3cd73d46b3
+      size: 15283
     - path: data/processed/X_test.pt
       hash: md5
-      md5: 5cccd1b7a2719f701969d43af11a3621
-      size: 11671
+      md5: ee8e37036c887ec85b00d470686d62f4
+      size: 11240
     - path: data/processed/y_test.pt
       hash: md5
-      md5: 013529e98f01873fdc17cacc4539f1d5
-      size: 5133
+      md5: 358a2d51f56f4c1e31afc62ab9e49df7
+      size: 4702
     - path: pipelines/src/evaluate_v2.py
       hash: md5
-      md5: a43ae16a54e91cb338255cd560663558
-      size: 2025
+      md5: 59e9209f7d3bd8ccd573ac21b09f8930
+      size: 1962
     params:
       params.yaml:
         evaluation.batch_size: 32

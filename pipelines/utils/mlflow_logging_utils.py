@@ -1,5 +1,10 @@
 import mlflow
 from torchinfo import summary
+import os
+import sys
+from io import StringIO
+
+os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 
 def mlflow_epochs_logs(epoch_df):
@@ -44,8 +49,19 @@ def mlflow_model_log_summary(model):
     Args:
         model (torch.nn.Module): Modelo de PyTorch que se desea registrar y resumir.
     """
+    # Redirect stdout to capture the summary output
+    old_stdout = sys.stdout
+    sys.stdout = mystdout = StringIO()
+
+    try:
+        summary(model)
+        summary_str = mystdout.getvalue()
+    finally:
+        sys.stdout = old_stdout
+
     with open("model_summary.txt", "w", encoding="utf-8") as f:
-        f.write(str(summary(model)))
+        f.write(summary_str)
+
     mlflow.log_artifact("model_summary.txt")
     mlflow.pytorch.log_model(model, "model")
 
