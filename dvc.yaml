@@ -10,11 +10,12 @@ stages:
     - ${data.processed}
 
   preprocess:
-    cmd: python -m pipelines/src/preprocess_v2.py data/processed/train_test_data.csv data/processed/X_test.pt
+    cmd: python -m pipelines.src.preprocess_v2 data/processed/train_test_data.csv data/processed/X_test.pt
      data/processed/X_train.pt data/processed/y_test.pt data/processed/y_train.pt
     deps:
     - data/processed/train_test_data.csv
     - pipelines/src/preprocess_v2.py
+    - pipelines/transformers/get_flare_transformer.py
     params:
     - data.processed
     outs:
