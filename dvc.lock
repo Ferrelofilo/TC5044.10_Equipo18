@@ -136,21 +136,25 @@ stages:
       md5: 5fce9fe23e55e4c30b4faa57767552f1
       size: 15734
   evaluate_model_linear:
-    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt
+    cmd: python -m pipelines.src.evaluate_v2 data/processed/X_test.pt data/processed/y_test.pt
       data/models/linear_cnn_model.pth
     deps:
     - path: data/models/linear_cnn_model.pth
       hash: md5
-      md5: 10f9e274e1838a26f5a214ff02072246
+      md5: 5fce9fe23e55e4c30b4faa57767552f1
       size: 15734
     - path: data/processed/X_test.pt
       hash: md5
-      md5: 492fc439cd00dc668d02d7444e340cb3
+      md5: 5cccd1b7a2719f701969d43af11a3621
       size: 11671
     - path: data/processed/y_test.pt
       hash: md5
-      md5: 6fcafeb6ce48ba4c33c3ece6f1a41f27
+      md5: 013529e98f01873fdc17cacc4539f1d5
       size: 5133
+    - path: pipelines/src/evaluate_v2.py
+      hash: md5
+      md5: a43ae16a54e91cb338255cd560663558
+      size: 2025
     params:
       params.yaml:
         evaluation.batch_size: 32
