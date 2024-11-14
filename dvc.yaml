@@ -25,7 +25,7 @@ stages:
     - data/processed/y_train.pt
 
   train_model_linear:
-    cmd: python pipelines/src/train_v2.py data/processed/X_train.pt data/processed/y_train.pt linear_cnn
+    cmd: python -m pipelines.src.train_v2.py data/processed/X_train.pt data/processed/y_train.pt linear_cnn
     deps:
       - pipelines/src/train_v2.py
       - data/processed/X_train.pt
