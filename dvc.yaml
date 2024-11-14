@@ -25,7 +25,7 @@ stages:
     - data/processed/y_train.pt
 
   train_model_linear:
-    cmd: python -m pipelines.src.train_v2.py data/processed/X_train.pt data/processed/y_train.pt linear_cnn
+    cmd: python -m pipelines.src.train_v2 data/processed/X_train.pt data/processed/y_train.pt linear_cnn
     deps:
       - pipelines/src/train_v2.py
       - data/processed/X_train.pt
@@ -36,7 +36,7 @@ stages:
       - data/models/linear_cnn_model.pth
 
  # train_model_convolutional:
- #   cmd: python pipelines/src/train_v2.py data/processed/X_train.pt data/processed/y_train.pt convolutional_cnn
+ #   cmd: python -m pipelines.src.train_v2 data/processed/X_train.pt data/processed/y_train.pt convolutional_cnn
  #   deps:
  #     - pipelines/src/train_v2.py
  #     - data/processed/X_train.pt
@@ -47,11 +47,12 @@ stages:
  #     - data/models/convolutional_cnn_model.pth
 
   evaluate_model_linear:
-    cmd: python pipelines/src/evaluate_v2.py data/processed/X_test.pt data/processed/y_test.pt data/models/linear_cnn_model.pth
+    cmd: python -m pipelines.src.evaluate_v2 data/processed/X_test.pt data/processed/y_test.pt data/models/linear_cnn_model.pth
     deps:
       - data/processed/X_test.pt  
       - data/processed/y_test.pt
       - data/models/linear_cnn_model.pth
+      - pipelines/src/evaluate_v2.py
     params:
       - evaluation.batch_size  
 
@@ -61,5 +62,6 @@ stages:
 #      - data/processed/X_test.pt  
 #      - data/processed/y_test.pt
 #      - data/models/convolutional_cnn_model.pth
+#      - pipelines/src/evaluate_v2.py
 #    params:
 #      - evaluation.batch_size  
