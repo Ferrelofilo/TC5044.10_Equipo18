@@ -1,5 +1,5 @@
-default_stages: [commit]  # Run only on commit stage
-pass_failing_hooks: true  # Allow commits even if checks fail
+default_stages: [commit]  
+pass_failing_hooks: true  
 test:
   - repo: local
     hooks:
