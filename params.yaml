@@ -14,6 +14,13 @@ models:
     out_features1: 64
     out_features2: 32
     bias: true
+  linear_batch_cnn:
+    input_len: 9
+    out_features1: 64
+    out_features2: 32
+    out_features3: 16
+    out_features4: 8
+    bias: true
   convolutional_cnn:
   
 mlflow:
