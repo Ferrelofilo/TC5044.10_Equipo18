@@ -8,7 +8,7 @@ import torchmetrics
 from sklearn.metrics import mean_absolute_error, r2_score
 from torch import optim
 
-from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, ConvolutionalSimpleModel
+from pipelines.models.simple_linear_cnn_multi_out_3 import SimpleLinearCnnMO3, ConvolutionalSimpleModel, SimpleLinearBatchCnnMO3
 
 
 class MultiOutCnnHandler:
@@ -30,6 +30,8 @@ class MultiOutCnnHandler:
             return SimpleLinearCnnMO3(**self.model_params)
         elif self.cnn_type == "convolutional_cnn":
             return ConvolutionalSimpleModel(**self.model_params)
+        elif self.cnn_type == "linear_batch_cnn":
+            return SimpleLinearBatchCnnMO3(**self.model_params)
         else:
             raise ValueError(f"Unknown model type: {self.cnn_type}")
 
