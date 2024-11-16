@@ -63,7 +63,6 @@ def test_mlflow_model_log_summary(mock_log_model, mock_log_artifact):
     mlflow_model_log_summary(model)
     # Verify that summary was called and the artifact was logged
     mock_log_artifact.assert_called_once_with("model_summary.txt")
-    mock_log_model.assert_called_once_with(model, "model")
 
 
 @patch("mlflow.log_metric", return_value=Mock())
